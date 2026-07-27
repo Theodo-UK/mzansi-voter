@@ -469,8 +469,8 @@ export function MzansiVoterApp({
       </section>
 
       <footer className="site-footer">
-        <span>Mzansi Voter</span>
-        <span>Cape Town, democratically stocked.</span>
+        <span>Mzansi Voter · Theodo Cape Town</span>
+        <span>Office groceries, voted lekker.</span>
       </footer>
 
       {showDevtools ? (

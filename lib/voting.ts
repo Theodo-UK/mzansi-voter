@@ -118,7 +118,7 @@ export function deriveDisplayName(email: string) {
     .split(".")
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join("");
+    .join(" ");
 }
 
 export function isAllowedTheodoEmail(email: string) {

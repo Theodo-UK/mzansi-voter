@@ -1,10 +1,10 @@
 import type { GroceryItem, ItemVote, VoteValue } from "./voting";
 
 const voters = {
-  liam: { userId: "liam", displayName: "LiamHitchcock" },
-  anele: { userId: "anele", displayName: "AneleMoyo" },
-  jess: { userId: "jess", displayName: "JessNaidoo" },
-  sam: { userId: "sam", displayName: "SamNkosi" },
+  liam: { userId: "liam", displayName: "Liam Hitchcock" },
+  anele: { userId: "anele", displayName: "Anele Moyo" },
+  jess: { userId: "jess", displayName: "Jess Naidoo" },
+  sam: { userId: "sam", displayName: "Sam Nkosi" },
 };
 
 function votes(
@@ -31,7 +31,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:00:00.000Z",
-    createdBy: "AneleMoyo",
+    createdBy: "Anele Moyo",
     votes: votes([
       ["liam", 1],
       ["anele", 1],
@@ -49,7 +49,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:01:00.000Z",
-    createdBy: "SamNkosi",
+    createdBy: "Sam Nkosi",
     votes: votes([
       ["liam", 1],
       ["anele", 1],
@@ -67,7 +67,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:02:00.000Z",
-    createdBy: "JessNaidoo",
+    createdBy: "Jess Naidoo",
     votes: votes([
       ["liam", 1],
       ["anele", 1],
@@ -85,7 +85,7 @@ export const initialItems: GroceryItem[] = [
     locked: true,
     skipped: false,
     createdAt: "2026-07-20T08:03:00.000Z",
-    createdBy: "LiamHitchcock",
+    createdBy: "Liam Hitchcock",
     votes: [],
   },
   {
@@ -98,7 +98,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:04:00.000Z",
-    createdBy: "AneleMoyo",
+    createdBy: "Anele Moyo",
     votes: votes([
       ["liam", 1],
       ["anele", 1],
@@ -115,7 +115,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:05:00.000Z",
-    createdBy: "SamNkosi",
+    createdBy: "Sam Nkosi",
     votes: votes([
       ["liam", 1],
       ["anele", 1],
@@ -132,7 +132,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:06:00.000Z",
-    createdBy: "JessNaidoo",
+    createdBy: "Jess Naidoo",
     votes: votes([
       ["liam", 1],
       ["jess", 1],
@@ -149,7 +149,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:07:00.000Z",
-    createdBy: "AneleMoyo",
+    createdBy: "Anele Moyo",
     votes: votes([
       ["anele", 1],
       ["jess", 1],
@@ -166,7 +166,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:08:00.000Z",
-    createdBy: "SamNkosi",
+    createdBy: "Sam Nkosi",
     votes: votes([
       ["liam", 1],
       ["anele", 1],
@@ -183,7 +183,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: false,
     createdAt: "2026-07-20T08:09:00.000Z",
-    createdBy: "JessNaidoo",
+    createdBy: "Jess Naidoo",
     votes: [],
   },
   {
@@ -196,7 +196,7 @@ export const initialItems: GroceryItem[] = [
     locked: false,
     skipped: true,
     createdAt: "2026-07-20T08:10:00.000Z",
-    createdBy: "LiamHitchcock",
+    createdBy: "Liam Hitchcock",
     votes: [],
   },
 ];

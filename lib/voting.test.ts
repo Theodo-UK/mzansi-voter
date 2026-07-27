@@ -18,7 +18,7 @@ function item(overrides: Partial<GroceryItem> = {}): GroceryItem {
     locked: false,
     skipped: false,
     createdAt: "2026-07-27T10:00:00.000Z",
-    createdBy: "LiamHitchcock",
+    createdBy: "Liam Hitchcock",
     votes: [],
     ...overrides,
   };
@@ -27,7 +27,7 @@ function item(overrides: Partial<GroceryItem> = {}): GroceryItem {
 describe("email access and display names", () => {
   it("derives the agreed display name from the email local-part", () => {
     expect(deriveDisplayName("liam.hitchcock@theodo.com")).toBe(
-      "LiamHitchcock",
+      "Liam Hitchcock",
     );
   });
 
