@@ -9,8 +9,11 @@ const { r2 } = hostingConfig;
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
 
 const localBindingConfig = {
+  name: "mzansi-voter",
   main: "./worker/index.ts",
+  compatibility_date: "2026-07-28",
   compatibility_flags: ["nodejs_compat"],
+  workers_dev: true,
   r2_buckets: r2
     ? [
         {

@@ -20,6 +20,19 @@ npm test
 npm run lint
 ```
 
+## Deploy
+
+Pushes to `main` run the full test suite and deploy the resulting Worker build
+through `.github/workflows/deploy.yml`.
+
+The GitHub repository needs these Actions secrets:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`
+
+Create a custom Cloudflare token with **Workers Scripts: Write** permission,
+scoped to the account that owns the `mzansi-voter` Worker.
+
 ## Connect Supabase
 
 The database schema, Theodo-only signup hook, Liam admin bootstrap, and
