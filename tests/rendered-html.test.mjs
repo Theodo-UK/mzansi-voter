@@ -22,24 +22,11 @@ async function render() {
   );
 }
 
-test("server-renders the Mzansi Voter product shell", async () => {
+test("production redirects anonymous visitors before rendering the ballot", async () => {
   const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
-  assert.match(
-    html,
-    /<title>Mzansi Voter \| The office shop, democratically<\/title>/i,
+  assert.equal(response.status, 307);
+  assert.equal(
+    new URL(response.headers.get("location"), "http://localhost").pathname,
+    "/auth/login",
   );
-  assert.match(html, /Voting list/);
-  assert.match(html, /Cape Town(?:<!-- -->)? office ballot/);
-  assert.match(html, /Shopping at (?:<!-- -->)?Checkers/);
-  assert.match(html, /Suggest an item for the list/);
-  assert.match(html, /Out of budget/);
-  assert.match(html, /Added by (?:<!-- -->)?Anele Moyo/);
-  assert.match(html, /Theodo Cape Town/);
-  assert.match(html, /Office groceries, voted lekker/);
-  assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
-  assert.doesNotMatch(html, /Dev preview|Admin mode/);
 });

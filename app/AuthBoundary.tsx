@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import { useEffect, useMemo } from "react";
 import {
   QueryClient,
   QueryClientProvider,
@@ -10,10 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { MzansiVoterApp, type ShoppingPersistence } from "./MzansiVoterApp";
 import { AuthScreen } from "./components/AuthScreen";
-import {
-  getSupabaseBrowserClient,
-  isSupabaseConfigured,
-} from "@/lib/supabase/client";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
   deleteItem,
   loadShoppingData,
@@ -23,82 +19,21 @@ import {
   startNextCycle,
   updateGroupSettings,
 } from "@/lib/supabase/repository";
-import { isAllowedTheodoEmail } from "@/lib/voting";
 
-function ConnectedApp() {
+type AuthenticatedUser = {
+  id: string;
+  email: string;
+};
+
+function ConnectedApp({ user }: { user: AuthenticatedUser }) {
   const client = useMemo(() => getSupabaseBrowserClient(), []);
   const queryClient = useMemo(() => new QueryClient(), []);
-  const [session, setSession] = useState<Session | null | undefined>();
-  const [authError, setAuthError] = useState("");
-  const sessionEmail = session?.user.email ?? "";
-  const sessionAllowed =
-    session === null || session === undefined
-      ? true
-      : session.user.app_metadata.provider === "google" &&
-        isAllowedTheodoEmail(sessionEmail);
 
-  useEffect(() => {
-    if (!client) return;
-
-    void client.auth.getSession().then(({ data, error }) => {
-      if (error) setAuthError(error.message);
-      setSession(data.session);
-    });
-
-    const {
-      data: { subscription },
-    } = client.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-      setAuthError("");
-    });
-
-    return () => subscription.unsubscribe();
-  }, [client]);
-
-  useEffect(() => {
-    if (client && session && !sessionAllowed) {
-      void client.auth.signOut();
-    }
-  }, [client, session, sessionAllowed]);
-
-  if (!client) return <MzansiVoterApp />;
-
-  if (authError) {
-    return <AuthScreen state="error" message={authError} />;
-  }
-
-  if (session === undefined) {
-    return <AuthScreen state="loading" />;
-  }
-
-  if (!session) {
+  if (!client) {
     return (
       <AuthScreen
-        state="signed_out"
-        onSignIn={() => {
-          void client.auth
-            .signInWithOAuth({
-              provider: "google",
-              options: {
-                redirectTo: window.location.origin,
-                queryParams: {
-                  hd: "theodo.com",
-                },
-              },
-            })
-            .then(({ error }) => {
-              if (error) setAuthError(error.message);
-            });
-        }}
-      />
-    );
-  }
-
-  if (!sessionAllowed) {
-    return (
-      <AuthScreen
-        state="denied"
-        message="Use a verified @theodo.com Google account to enter Mzansi Voter."
+        state="error"
+        message="Authentication is not configured for this deployment."
       />
     );
   }
@@ -106,9 +41,12 @@ function ConnectedApp() {
   return (
     <QueryClientProvider client={queryClient}>
       <SupabaseShoppingApp
-        userId={session.user.id}
-        email={sessionEmail}
-        onSignOut={() => client.auth.signOut()}
+        userId={user.id}
+        email={user.email}
+        onSignOut={async () => {
+          await client.auth.signOut();
+          window.location.assign("/auth/login");
+        }}
       />
     </QueryClientProvider>
   );
@@ -242,10 +180,14 @@ function SupabaseShoppingApp({
   );
 }
 
-export function AuthBoundary() {
-  if (!isSupabaseConfigured()) {
-    return <MzansiVoterApp />;
-  }
+type AuthBoundaryProps =
+  | { user: AuthenticatedUser }
+  | { fixture: true };
 
-  return <ConnectedApp />;
+export function AuthBoundary(props: AuthBoundaryProps) {
+  return "fixture" in props ? (
+    <MzansiVoterApp />
+  ) : (
+    <ConnectedApp user={props.user} />
+  );
 }

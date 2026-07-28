@@ -1,18 +1,14 @@
 "use client";
 
 import { LockKeyhole, ShoppingBasket } from "lucide-react";
+import Link from "next/link";
 
 type AuthScreenProps = {
-  state: "signed_out" | "loading" | "denied" | "error";
+  state: "loading" | "denied" | "error";
   message?: string;
-  onSignIn?: () => void;
 };
 
-export function AuthScreen({
-  state,
-  message,
-  onSignIn,
-}: AuthScreenProps) {
+export function AuthScreen({ state, message }: AuthScreenProps) {
   const isLoading = state === "loading";
   const heading =
     state === "denied"
@@ -24,13 +20,13 @@ export function AuthScreen({
   return (
     <main className="auth-shell">
       <section className="auth-panel">
-        <a className="brand auth-brand" href="#" aria-label="Mzansi Voter home">
+        <Link className="brand auth-brand" href="/" aria-label="Mzansi Voter home">
           <span className="brand-mark" aria-hidden="true" />
           <span>
             <strong>Mzansi Voter</strong>
             <small>The office shop, democratically.</small>
           </span>
-        </a>
+        </Link>
 
         <div className="auth-visual" aria-hidden="true">
           <ShoppingBasket size={54} strokeWidth={1.4} />
@@ -45,19 +41,6 @@ export function AuthScreen({
           {message ??
             "Sign in with your Theodo Google account to suggest, vote, and see what makes Friday's trolley."}
         </p>
-
-        {state === "signed_out" ? (
-          <button
-            type="button"
-            className="button button--google"
-            onClick={onSignIn}
-          >
-            <span className="google-mark" aria-hidden="true">
-              G
-            </span>
-            Continue with Google
-          </button>
-        ) : null}
 
         {isLoading ? (
           <div className="auth-loading" role="status">
