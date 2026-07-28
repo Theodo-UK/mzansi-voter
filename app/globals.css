@@ -361,6 +361,17 @@ select:focus-visible {
   background: #f8f8f5;
 }
 
+.button--danger {
+  border: 1px solid #e3b2a5;
+  background: #fff6f3;
+  color: #a43c27;
+}
+
+.button--danger:hover:not(:disabled) {
+  border-color: #ce806c;
+  background: #ffebe5;
+}
+
 .warning-banner {
   margin: 0 0 10px;
   padding: 11px 13px;
@@ -682,6 +693,11 @@ select:focus-visible {
   margin: 2px 0 0;
   color: var(--muted);
   font-size: 10px;
+}
+
+.admin-actions__buttons {
+  display: flex;
+  gap: 8px;
 }
 
 .site-footer {
@@ -1236,6 +1252,11 @@ select:focus-visible {
 
   .admin-actions {
     display: grid;
+  }
+
+  .admin-actions__buttons {
+    display: grid;
+    justify-items: start;
   }
 
   .admin-actions .button {

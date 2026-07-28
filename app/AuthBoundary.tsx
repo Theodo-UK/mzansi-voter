@@ -11,6 +11,7 @@ import { MzansiVoterApp, type ShoppingPersistence } from "./MzansiVoterApp";
 import { AuthScreen } from "./components/AuthScreen";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
+  clearItems,
   deleteItem,
   loadShoppingData,
   persistVote,
@@ -148,6 +149,10 @@ function SupabaseShoppingApp({
     },
     updateGroupSettings: async (settings) => {
       await updateGroupSettings(client, data.groupId, settings);
+      await refresh();
+    },
+    clearItems: async () => {
+      await clearItems(client, data.groupId);
       await refresh();
     },
     startNextCycle: async (acceptedItemIds) => {

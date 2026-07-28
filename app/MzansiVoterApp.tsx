@@ -11,6 +11,7 @@ import {
   Plus,
   Settings2,
   Store,
+  Trash2,
 } from "lucide-react";
 import { BallotSettingsDialog } from "./components/BallotSettingsDialog";
 import { ItemCard } from "./components/ItemCard";
@@ -45,6 +46,7 @@ export type ShoppingPersistence = {
     nextOrderDate: string;
     cutoffTime: string;
   }) => Promise<void>;
+  clearItems: () => Promise<void>;
   startNextCycle: (acceptedItemIds: string[]) => Promise<void>;
 };
 
@@ -263,6 +265,25 @@ export function MzansiVoterApp({
       });
   }
 
+  function clearAllItems() {
+    if (
+      !items.length ||
+      !window.confirm(
+        "Clear every item from the ballot? This permanently deletes all items and votes.",
+      )
+    ) {
+      return;
+    }
+
+    const previous = items;
+    setItems([]);
+    announce("All ballot items cleared.");
+    void persistence?.clearItems().catch(() => {
+      setItems(previous);
+      announce("Clear failed. The ballot has been restored.");
+    });
+  }
+
   return (
     <main className="app-shell">
       <header className="site-header">
@@ -454,17 +475,29 @@ export function MzansiVoterApp({
           <div className="admin-actions">
             <div>
               <span className="eyebrow">Admin</span>
-              <strong>Order done?</strong>
-              <p>Keep regulars, remove accepted one-offs, and clear the votes.</p>
+              <strong>Manage the ballot</strong>
+              <p>Start the next cycle, or clear every item and begin again.</p>
             </div>
-            <button
-              type="button"
-              className="button button--quiet"
-              onClick={startNextCycle}
-            >
-              <Check aria-hidden="true" size={16} />
-              Start next cycle
-            </button>
+            <div className="admin-actions__buttons">
+              <button
+                type="button"
+                className="button button--danger"
+                disabled={!items.length}
+                onClick={clearAllItems}
+              >
+                <Trash2 aria-hidden="true" size={16} />
+                Clear all items
+              </button>
+              <button
+                type="button"
+                className="button button--quiet"
+                disabled={!items.length}
+                onClick={startNextCycle}
+              >
+                <Check aria-hidden="true" size={16} />
+                Start next cycle
+              </button>
+            </div>
           </div>
         ) : null}
       </section>

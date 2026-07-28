@@ -188,6 +188,17 @@ export async function deleteItem(client: SupabaseClient, itemId: string) {
   if (error) throw error;
 }
 
+export async function clearItems(
+  client: SupabaseClient,
+  groupId: string,
+) {
+  const { error } = await client
+    .from("items")
+    .delete()
+    .eq("group_id", groupId);
+  if (error) throw error;
+}
+
 export async function setItemFlags(
   client: SupabaseClient,
   itemId: string,
