@@ -25,6 +25,7 @@ type ItemRow = {
   name: string;
   price_cents: number;
   product_url: string;
+  preview_image_path: string | null;
   purchase_type: "recurring" | "one_off";
   locked: boolean;
   skipped: boolean;
@@ -80,6 +81,7 @@ export async function loadShoppingData(
           name,
           price_cents,
           product_url,
+          preview_image_path,
           purchase_type,
           locked,
           skipped,
@@ -98,22 +100,32 @@ export async function loadShoppingData(
   if (groupResult.error) throw groupResult.error;
   if (itemResult.error) throw itemResult.error;
 
-  const items = (itemResult.data as unknown as ItemRow[]).map((row) => ({
-    id: row.id,
-    name: row.name,
-    priceCents: row.price_cents,
-    productUrl: row.product_url,
-    purchaseType: row.purchase_type,
-    locked: row.locked,
-    skipped: row.skipped,
-    createdAt: row.created_at,
-    createdBy: firstRelated(row.creator)?.display_name ?? "Unknown",
-    votes: (row.votes ?? []).map((vote) => ({
-      userId: vote.user_id,
-      displayName: firstRelated(vote.voter)?.display_name ?? "Unknown",
-      value: vote.value,
-    })),
-  }));
+  const items = (itemResult.data as unknown as ItemRow[]).map((row) => {
+    const previewImagePath = row.preview_image_path ?? undefined;
+    const previewImageUrl = previewImagePath
+      ? client.storage.from("product-previews").getPublicUrl(previewImagePath)
+          .data.publicUrl
+      : undefined;
+
+    return {
+      id: row.id,
+      name: row.name,
+      priceCents: row.price_cents,
+      productUrl: row.product_url,
+      previewImagePath,
+      previewImageUrl,
+      purchaseType: row.purchase_type,
+      locked: row.locked,
+      skipped: row.skipped,
+      createdAt: row.created_at,
+      createdBy: firstRelated(row.creator)?.display_name ?? "Unknown",
+      votes: (row.votes ?? []).map((vote) => ({
+        userId: vote.user_id,
+        displayName: firstRelated(vote.voter)?.display_name ?? "Unknown",
+        value: vote.value,
+      })),
+    };
+  });
 
   return {
     user: {
@@ -138,11 +150,34 @@ export async function saveItem(
   userId: string,
   input: ItemInput,
   itemId?: string,
+  existingItem?: Pick<GroceryItem, "productUrl" | "previewImagePath">,
 ) {
+  let previewImagePath =
+    existingItem?.productUrl === input.productUrl
+      ? (existingItem.previewImagePath ?? null)
+      : null;
+
+  if (
+    !existingItem ||
+    existingItem.productUrl !== input.productUrl ||
+    !existingItem.previewImagePath
+  ) {
+    const previewResult = await client.functions.invoke("product-preview", {
+      body: { url: input.productUrl },
+    });
+    if (
+      !previewResult.error &&
+      typeof previewResult.data?.previewImagePath === "string"
+    ) {
+      previewImagePath = previewResult.data.previewImagePath;
+    }
+  }
+
   const payload = {
     name: input.name,
     price_cents: Math.round(input.price * 100),
     product_url: input.productUrl,
+    preview_image_path: previewImagePath,
     purchase_type: input.purchaseType,
   };
 

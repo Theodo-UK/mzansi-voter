@@ -12,6 +12,8 @@ export type GroceryItem = {
   name: string;
   priceCents: number;
   productUrl: string;
+  previewImagePath?: string;
+  previewImageUrl?: string;
   purchaseType: PurchaseType;
   locked: boolean;
   skipped: boolean;

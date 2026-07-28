@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import type { RankedItem, VoteValue } from "@/lib/voting";
 import { formatRand } from "@/lib/voting";
+import { ProductPreview } from "./ProductPreview";
 import { VoteButton } from "./VoteButton";
 
 type ItemCardProps = {
@@ -54,6 +55,12 @@ export function ItemCard({
             {item.name}
             <ExternalLink aria-hidden="true" size={14} />
           </a>
+          {item.previewImageUrl ? (
+            <ProductPreview
+              imageUrl={item.previewImageUrl}
+              productName={item.name}
+            />
+          ) : null}
           <span className="item-price">{formatRand(item.priceCents)}</span>
         </div>
 

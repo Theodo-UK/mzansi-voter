@@ -131,7 +131,17 @@ function SupabaseShoppingApp({
     queryClient.invalidateQueries({ queryKey: ["shopping-data", userId] });
   const persistence: ShoppingPersistence = {
     saveItem: async (input, itemId) => {
-      const id = await saveItem(client, data.groupId, userId, input, itemId);
+      const existingItem = itemId
+        ? data.items.find((item) => item.id === itemId)
+        : undefined;
+      const id = await saveItem(
+        client,
+        data.groupId,
+        userId,
+        input,
+        itemId,
+        existingItem,
+      );
       await refresh();
       return id;
     },
