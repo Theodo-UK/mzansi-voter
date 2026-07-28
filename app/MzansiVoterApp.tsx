@@ -57,6 +57,7 @@ type MzansiVoterAppProps = {
   startingNextOrderDate?: string;
   startingCutoffTime?: string;
   persistence?: ShoppingPersistence;
+  showDevtools?: boolean;
   onSignOut?: () => void;
 };
 
@@ -98,6 +99,8 @@ export function MzansiVoterApp({
   startingNextOrderDate = DEFAULT_NEXT_ORDER_DATE,
   startingCutoffTime = "10:00",
   persistence,
+  showDevtools = process.env.NODE_ENV === "development" &&
+    persistence === undefined,
   onSignOut,
 }: MzansiVoterAppProps = {}) {
   const [items, setItems] = useState<GroceryItem[]>(startingItems);
@@ -114,8 +117,6 @@ export function MzansiVoterApp({
     () => applyBudgetCutoff(items, budgetCents),
     [budgetCents, items],
   );
-  const showDevtools =
-    process.env.NODE_ENV === "development" && persistence === undefined;
   const isAdmin = showDevtools ? adminPreview : user.role === "admin";
 
   function announce(message: string) {

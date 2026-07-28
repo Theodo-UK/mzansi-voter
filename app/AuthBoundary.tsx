@@ -182,11 +182,11 @@ function SupabaseShoppingApp({
 
 type AuthBoundaryProps =
   | { user: AuthenticatedUser }
-  | { fixture: true };
+  | { fixture: true; showDevtools?: boolean };
 
 export function AuthBoundary(props: AuthBoundaryProps) {
   return "fixture" in props ? (
-    <MzansiVoterApp />
+    <MzansiVoterApp showDevtools={props.showDevtools} />
   ) : (
     <ConnectedApp user={props.user} />
   );
