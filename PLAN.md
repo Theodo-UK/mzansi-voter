@@ -289,7 +289,7 @@ Verify:
 
 Verify:
 
-- `liam.hitchcock@theodo.com` is accepted and produces `LiamHitchcock`.
+- `liam.hitchcock@theodo.com` is accepted and produces `Liam Hitchcock`.
 - `liam.hitchcock@theodo.com` receives the `admin` role in the default Cape Town
   group.
 - Another valid Theodo account receives `member` and cannot promote itself.
@@ -366,3 +366,31 @@ The MVP is complete when:
 - The default Cape Town group remains hardcoded for the MVP.
 
 Both can be revisited after the office has used the first version.
+
+## Future experiments
+
+### Product imagery
+
+- Show an item image without making the ranked list noisy, potentially in a
+  hover, focus, or tap preview.
+- Prefer an explicit stored image URL or server-side product-metadata lookup.
+  Do not rely on browser scraping of retailer pages because CORS, markup
+  changes, and stale images would make that brittle.
+- Keep the product link as the source of truth and provide a graceful
+  image-unavailable state.
+
+### Ballot metrics
+
+- Explore a compact metrics pane with fun summaries such as:
+  - favourite item;
+  - least favourite item;
+  - most controversial item;
+  - biggest mover during the current cycle.
+- Define the metrics before presenting them. For example, favourite and least
+  favourite can use net score, while controversy should account for both vote
+  volume and how evenly split the votes are.
+- Current vote rows only represent the latest state. Tracking movement requires
+  an append-only vote-event history containing the item, voter, previous vote,
+  new vote, timestamp, and shopping cycle.
+- Treat vote history as office-fun telemetry, not employee performance data.
+  Keep access group-scoped and agree on retention before building it.
