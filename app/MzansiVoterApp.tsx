@@ -12,7 +12,9 @@ import {
   Settings2,
   Store,
   Trash2,
+  UserCog,
 } from "lucide-react";
+import Link from "next/link";
 import { BallotSettingsDialog } from "./components/BallotSettingsDialog";
 import { ItemCard } from "./components/ItemCard";
 import { ItemDialog, type ItemInput } from "./components/ItemDialog";
@@ -333,6 +335,15 @@ export function MzansiVoterApp({
           <span className="avatar" aria-hidden="true">
             {user.displayName.slice(0, 2).toUpperCase()}
           </span>
+          {isAdmin && persistence ? (
+            <Link
+              className="icon-button"
+              href="/settings"
+              aria-label="Open admin settings"
+            >
+              <UserCog aria-hidden="true" size={19} />
+            </Link>
+          ) : null}
           <button
             type="button"
             className="icon-button"
