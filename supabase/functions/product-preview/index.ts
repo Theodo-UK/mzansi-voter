@@ -33,7 +33,7 @@ function requiredEnvironment(name: string) {
   return value;
 }
 
-async function getAuthenticatedTheodoUser(request: Request) {
+async function getAuthenticatedOfficeUser(request: Request) {
   const authorization = request.headers.get("Authorization");
   if (!authorization) return null;
 
@@ -49,7 +49,7 @@ async function getAuthenticatedTheodoUser(request: Request) {
 
   const user = (await userResponse.json()) as { email?: string };
   const email = user.email?.trim().toLowerCase() ?? "";
-  return /^[^@\s]+@theodo[.]com$/.test(email) ? user : null;
+  return /^[^@\s]+@(theodo[.]com|aleios[.]com)$/.test(email) ? user : null;
 }
 
 async function fetchCheckersProduct(initialUrl: URL) {
@@ -145,8 +145,8 @@ Deno.serve(async (request) => {
   }
 
   try {
-    if (!(await getAuthenticatedTheodoUser(request))) {
-      return json({ error: "Use a verified Theodo account." }, 403);
+    if (!(await getAuthenticatedOfficeUser(request))) {
+      return json({ error: "Use a verified Theodo or Aleios account." }, 403);
     }
   } catch {
     return json({ error: "Authentication is unavailable." }, 503);

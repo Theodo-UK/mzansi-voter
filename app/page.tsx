@@ -6,7 +6,7 @@ import {
   getSupabaseConfig,
 } from "@/lib/supabase/config";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { isAllowedTheodoEmail } from "@/lib/voting";
+import { isAllowedOfficeEmail } from "@/lib/voting";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +36,7 @@ export default async function Home() {
   const email = user.email ?? "";
   const isAllowed =
     user.app_metadata.provider === "google" &&
-    isAllowedTheodoEmail(email);
+    isAllowedOfficeEmail(email);
 
   if (!isAllowed) {
     await supabase.auth.signOut();
