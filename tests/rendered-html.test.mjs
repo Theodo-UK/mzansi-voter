@@ -36,6 +36,11 @@ test("production does not expose the local fixture", async () => {
   assert.equal(response.status, 404);
 });
 
+test("production does not expose the metrics design fixture", async () => {
+  const response = await render("/fixture/metrics");
+  assert.equal(response.status, 404);
+});
+
 test("production redirects anonymous settings visitors", async () => {
   const response = await render("/settings");
   assert.equal(response.status, 307);

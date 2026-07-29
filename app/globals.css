@@ -121,6 +121,31 @@ select:focus-visible {
   gap: 9px;
 }
 
+.insights-link {
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  color: var(--green-dark);
+  font-size: 10px;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    transform 140ms ease;
+}
+
+.insights-link:hover {
+  border-color: #c9c9c2;
+  background: #f7f7f3;
+  transform: translateY(-1px);
+}
+
 .account-copy {
   text-align: right;
 }
@@ -299,6 +324,464 @@ select:focus-visible {
 
 .how-it-works__copy p + p {
   margin-top: 7px;
+}
+
+.ballot-pulse {
+  position: relative;
+  margin-top: 18px;
+  padding: 23px;
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      circle at 92% 5%,
+      rgba(247, 201, 72, 0.2),
+      transparent 11rem
+    ),
+    var(--green-dark);
+  box-shadow: 0 18px 38px rgba(14, 57, 46, 0.15);
+  color: white;
+}
+
+.ballot-pulse::after {
+  position: absolute;
+  right: -38px;
+  bottom: -48px;
+  width: 132px;
+  height: 132px;
+  border: 26px solid rgba(217, 99, 44, 0.13);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.ballot-pulse__heading {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.ballot-pulse__heading .eyebrow {
+  color: var(--yellow);
+}
+
+.ballot-pulse__heading h1 {
+  margin: 5px 0 5px;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(27px, 5vw, 38px);
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.metrics-preview-page {
+  width: min(760px, calc(100% - 32px));
+  margin: 44px auto 64px;
+}
+
+.metrics-preview-page .ballot-pulse {
+  margin-top: 22px;
+}
+
+.metrics-preview-badge {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ballot-pulse__heading p {
+  max-width: 470px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.67);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.ballot-pulse__cycle {
+  min-height: 29px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.ballot-pulse__cycle > span,
+.ballot-pulse__cycle strong,
+.ballot-pulse__cycle small {
+  display: block;
+}
+
+.ballot-pulse__cycle strong {
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ballot-pulse__cycle small {
+  margin-top: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 7px;
+}
+
+.ballot-pulse__grid {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pulse-card {
+  position: relative;
+  min-width: 0;
+  min-height: 178px;
+  padding: 16px;
+  border: 1px solid rgba(16, 45, 37, 0.08);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 9px 20px rgba(5, 24, 19, 0.11);
+  color: var(--ink);
+}
+
+.pulse-card--favourite {
+  background: #fff3c4;
+}
+
+.pulse-card--underdog {
+  background: #ffebe5;
+}
+
+.pulse-card__label {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.pulse-card__icon {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--green-dark);
+  color: var(--yellow);
+}
+
+.pulse-card__label-copy {
+  min-width: 0;
+}
+
+.pulse-card__label-copy strong,
+.pulse-card__label-copy small {
+  display: block;
+}
+
+.pulse-card__label-copy strong {
+  color: var(--ink-soft);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.pulse-card__label-copy small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.pulse-card--underdog .pulse-card__icon {
+  background: var(--orange);
+  color: white;
+}
+
+.pulse-card--fresh {
+  background: #eef7ed;
+}
+
+.pulse-card h2 {
+  margin: 13px 0 4px;
+  overflow: hidden;
+  font-family: var(--font-display), sans-serif;
+  font-size: 18px;
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pulse-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.pulse-card p strong {
+  color: var(--green);
+  font-size: 18px;
+  letter-spacing: -0.04em;
+}
+
+.pulse-card--underdog p strong {
+  color: var(--red);
+}
+
+.pulse-delta {
+  width: max-content;
+  margin-top: 8px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  display: block;
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.pulse-delta--up {
+  background: rgba(23, 114, 81, 0.1);
+  color: var(--green);
+}
+
+.pulse-delta--down {
+  background: rgba(168, 66, 50, 0.1);
+  color: var(--red);
+}
+
+.pulse-card__body,
+.pulse-card__headline {
+  min-height: 98px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pulse-card__body {
+  align-items: center;
+}
+
+.pulse-ring {
+  width: 78px;
+  height: 78px;
+  flex: 0 0 auto;
+  padding: 8px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(var(--green) 0 90%, rgba(23, 114, 81, 0.13) 90%);
+  transform: rotate(-24deg);
+}
+
+.pulse-ring > span {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff8dc;
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transform: rotate(24deg);
+}
+
+.pulse-ring strong {
+  color: var(--ink);
+  font-family: var(--font-display), sans-serif;
+  font-size: 16px;
+  letter-spacing: -0.05em;
+}
+
+.vote-split {
+  height: 9px;
+  margin-top: auto;
+  border-radius: 999px;
+  display: flex;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.vote-split__up {
+  width: 56%;
+  background: var(--green);
+}
+
+.vote-split__down {
+  width: 44%;
+  background: var(--orange);
+}
+
+.vote-split__legend {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.vote-split__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.rank-sparkline {
+  width: 104px;
+  height: 52px;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.rank-sparkline path {
+  fill: none;
+  stroke: var(--orange);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.rank-sparkline circle {
+  fill: var(--yellow);
+  stroke: var(--orange);
+  stroke-width: 3;
+}
+
+.campaign-tally {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.campaign-tally span {
+  min-width: 37px;
+  height: 37px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.campaign-tally__up {
+  background: rgba(23, 114, 81, 0.1);
+  color: var(--green);
+}
+
+.campaign-tally__down {
+  background: rgba(168, 66, 50, 0.11);
+  color: var(--red);
+}
+
+.turnout-meter {
+  height: 10px;
+  margin-top: auto;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(23, 114, 81, 0.11);
+}
+
+.turnout-meter > span {
+  width: 83%;
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: var(--green);
+}
+
+.turnout-meter__legend {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.turnout-meter__legend .pulse-delta {
+  margin-top: 0;
+}
+
+.weekly-bars {
+  height: 66px;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.weekly-bars > span {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.weekly-bars i {
+  width: 19px;
+  border-radius: 6px 6px 3px 3px;
+  display: block;
+}
+
+.weekly-bars__previous i {
+  height: 58%;
+  background: rgba(23, 114, 81, 0.18);
+}
+
+.weekly-bars__current i {
+  height: 88%;
+  background: var(--green);
+}
+
+.weekly-bars small {
+  color: var(--muted);
+  font-size: 7px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.ballot-pulse__note {
+  position: relative;
+  z-index: 1;
+  margin: 12px 2px 0;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 8px;
+  line-height: 1.4;
 }
 
 .suggest-row {
@@ -1413,6 +1896,145 @@ select:focus-visible {
     padding-left: 17px;
   }
 
+  .ballot-pulse {
+    padding: 19px 17px;
+  }
+
+  .metrics-preview-page {
+    width: min(100% - 24px, 760px);
+    margin-top: 30px;
+  }
+
+  .ballot-pulse__heading {
+    display: block;
+  }
+
+  .ballot-pulse__cycle {
+    margin-top: 13px;
+  }
+
+  .ballot-pulse__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .pulse-card {
+    min-height: 184px;
+    padding: 12px;
+  }
+
+  .pulse-card__label {
+    gap: 5px;
+  }
+
+  .pulse-card__icon {
+    width: 23px;
+    height: 23px;
+    border-radius: 7px;
+  }
+
+  .pulse-card__label-copy strong {
+    font-size: 8px;
+    letter-spacing: 0.045em;
+  }
+
+  .pulse-card__label-copy small {
+    font-size: 7.5px;
+  }
+
+  .pulse-card h2 {
+    margin-top: 10px;
+    font-size: 14px;
+    white-space: normal;
+  }
+
+  .pulse-card p {
+    font-size: 8px;
+  }
+
+  .pulse-card p strong {
+    font-size: 15px;
+  }
+
+  .pulse-card__body,
+  .pulse-card__headline {
+    min-height: 88px;
+    gap: 7px;
+  }
+
+  .pulse-ring {
+    width: 54px;
+    height: 54px;
+    padding: 6px;
+  }
+
+  .pulse-card--favourite .pulse-card__body {
+    display: block;
+  }
+
+  .pulse-card--favourite .pulse-card__body > div {
+    max-width: calc(100% - 48px);
+  }
+
+  .pulse-card--favourite .pulse-ring {
+    position: absolute;
+    right: 9px;
+    bottom: 48px;
+  }
+
+  .pulse-ring > span {
+    font-size: 5px;
+  }
+
+  .pulse-ring strong {
+    font-size: 12px;
+  }
+
+  .rank-sparkline {
+    width: 62px;
+    height: 40px;
+  }
+
+  .campaign-tally {
+    gap: 2px;
+  }
+
+  .campaign-tally span {
+    min-width: 24px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 10px;
+  }
+
+  .campaign-tally svg {
+    width: 10px;
+  }
+
+  .pulse-card--underdog .campaign-tally {
+    position: absolute;
+    right: 9px;
+    bottom: 12px;
+  }
+
+  .vote-split__legend {
+    font-size: 7px;
+  }
+
+  .pulse-delta {
+    margin-top: 6px;
+    padding: 3px 5px;
+    font-size: 7px;
+  }
+
+  .weekly-bars {
+    height: 56px;
+    gap: 5px;
+  }
+
+  .weekly-bars i {
+    width: 15px;
+  }
+
   .suggest-row {
     margin-bottom: 36px;
   }
@@ -1595,6 +2217,66 @@ select:focus-visible {
 
   .site-footer span + span {
     margin-top: 4px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ballot-pulse {
+    padding-inline: 14px;
+  }
+
+  .pulse-card {
+    padding: 10px;
+  }
+
+  .pulse-card__label {
+    gap: 4px;
+  }
+
+  .pulse-card__icon {
+    width: 21px;
+    height: 21px;
+  }
+
+  .pulse-card__label-copy strong {
+    font-size: 7px;
+  }
+
+  .pulse-card__label-copy small {
+    font-size: 6.5px;
+  }
+
+  .pulse-card__body,
+  .pulse-card__headline {
+    gap: 4px;
+  }
+
+  .pulse-ring {
+    width: 48px;
+    height: 48px;
+  }
+
+  .rank-sparkline {
+    width: 48px;
+    height: 34px;
+  }
+
+  .campaign-tally {
+    gap: 2px;
+  }
+
+  .campaign-tally span {
+    min-width: 23px;
+    height: 26px;
+    font-size: 9px;
+  }
+
+  .campaign-tally svg {
+    width: 9px;
+  }
+
+  .vote-split__legend {
+    font-size: 6px;
   }
 }
 

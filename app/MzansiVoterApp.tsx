@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import {
   CalendarClock,
+  ChartNoAxesCombined,
   Check,
   ChevronDown,
   CircleAlert,
@@ -62,6 +63,7 @@ type MzansiVoterAppProps = {
   startingCutoffTime?: string;
   persistence?: ShoppingPersistence;
   showDevtools?: boolean;
+  insightsHref?: string;
   onSignOut?: () => void;
 };
 
@@ -105,6 +107,7 @@ export function MzansiVoterApp({
   persistence,
   showDevtools = process.env.NODE_ENV === "development" &&
     persistence === undefined,
+  insightsHref,
   onSignOut,
 }: MzansiVoterAppProps = {}) {
   const [items, setItems] = useState<GroceryItem[]>(startingItems);
@@ -326,6 +329,12 @@ export function MzansiVoterApp({
           </span>
         </a>
         <div className="account-area">
+          {insightsHref ? (
+            <Link className="insights-link" href={insightsHref}>
+              <ChartNoAxesCombined aria-hidden="true" size={16} />
+              <span>Insights</span>
+            </Link>
+          ) : null}
           <div className="account-copy">
             <span>{user.displayName}</span>
             <small>
