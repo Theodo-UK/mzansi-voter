@@ -41,6 +41,18 @@ test("production does not expose the metrics design fixture", async () => {
   assert.equal(response.status, 404);
 });
 
+test("metrics preview follows the deployment target", async () => {
+  const response = await render("/metrics");
+
+  if (process.env.NEXT_PUBLIC_DEPLOY_ENV === "development") {
+    assert.equal(response.status, 307);
+    assert.match(response.headers.get("location") ?? "", /\/auth\/login$/);
+    return;
+  }
+
+  assert.equal(response.status, 404);
+});
+
 test("production redirects anonymous settings visitors", async () => {
   const response = await render("/settings");
   assert.equal(response.status, 307);

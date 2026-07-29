@@ -107,7 +107,9 @@ export function MzansiVoterApp({
   persistence,
   showDevtools = process.env.NODE_ENV === "development" &&
     persistence === undefined,
-  insightsHref,
+  insightsHref = process.env.NEXT_PUBLIC_DEPLOY_ENV === "development"
+    ? "/metrics"
+    : undefined,
   onSignOut,
 }: MzansiVoterAppProps = {}) {
   const [items, setItems] = useState<GroceryItem[]>(startingItems);
