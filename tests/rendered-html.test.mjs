@@ -35,3 +35,12 @@ test("production does not expose the local fixture", async () => {
   const response = await render("/fixture");
   assert.equal(response.status, 404);
 });
+
+test("production redirects anonymous settings visitors", async () => {
+  const response = await render("/settings");
+  assert.equal(response.status, 307);
+  assert.equal(
+    new URL(response.headers.get("location"), "http://localhost").pathname,
+    "/auth/login",
+  );
+});
