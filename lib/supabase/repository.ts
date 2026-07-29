@@ -276,3 +276,42 @@ export async function startNextCycle(
   });
   if (error) throw error;
 }
+
+export async function loadGroupAdminEmails(
+  client: SupabaseClient,
+  groupId: string,
+) {
+  const { data, error } = await client
+    .from("group_admin_emails")
+    .select("email")
+    .eq("group_id", groupId)
+    .order("email");
+  if (error) throw error;
+  return data.map(({ email }) => email as string);
+}
+
+export async function addGroupAdmin(
+  client: SupabaseClient,
+  groupId: string,
+  email: string,
+) {
+  const { data, error } = await client.rpc("add_group_admin", {
+    target_group_id: groupId,
+    target_email: email.trim().toLowerCase(),
+  });
+  if (error) throw error;
+  return data === true;
+}
+
+export async function removeGroupAdmin(
+  client: SupabaseClient,
+  groupId: string,
+  email: string,
+) {
+  const { data, error } = await client.rpc("remove_group_admin", {
+    target_group_id: groupId,
+    target_email: email.trim().toLowerCase(),
+  });
+  if (error) throw error;
+  return data === true;
+}
