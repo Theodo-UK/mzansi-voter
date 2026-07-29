@@ -10,8 +10,8 @@ npm install
 npm run dev
 ```
 
-The app opens with a local fixture and all interactions enabled. No credentials
-are needed for the product and ranking work.
+With `.env.local` configured, the app uses the isolated development Supabase
+project. The local-only fixture remains available at `/fixture`.
 
 ## Check it
 
@@ -25,10 +25,22 @@ npm run lint
 Pushes to `main` run the full test suite and deploy the resulting Worker build
 through `.github/workflows/deploy.yml`.
 
+Pushes to `develop` run the same checks and deploy the development Worker to
+`https://dev.mzansivoter.co.za` through
+`.github/workflows/deploy-dev.yml`.
+
+`npm run deploy` is deliberately development-only. Production deploys come
+from the `main` workflow.
+
 The GitHub repository needs these Actions secrets:
 
 - `CLOUDFLARE_ACCOUNT_ID`
 - `CLOUDFLARE_API_TOKEN`
+
+The `development` GitHub environment also needs:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 Create a custom Cloudflare token with **Workers Scripts: Write** permission,
 scoped to the account that owns the `mzansi-voter` Worker.

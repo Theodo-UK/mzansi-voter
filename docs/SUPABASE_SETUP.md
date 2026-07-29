@@ -1,17 +1,23 @@
 # Supabase setup
 
-The app runs against its local fixture only in development. Production fails
-closed when Supabase credentials are absent. To enable authentication and
-persistence:
+Production and development use separate Supabase projects:
 
-1. Apply `supabase/migrations/20260727000000_initial_mvp.sql`.
-2. Apply `supabase/migrations/20260727000001_space_display_names.sql`.
+- Production: `hsqdrrebcowvieyvmxvl`
+- Development: `aksfajzlkhlslqsexzus`
+
+Local development uses the development project through `.env.local`.
+Production data must not be used for local or development testing.
+
+To configure a new environment:
+
+1. Link the Supabase CLI to the intended project and confirm the project ref.
+2. Dry-run pending migrations before applying them.
 3. Configure `public.hook_restrict_theodo_signup` as
    the project's **Before User Created** Auth Hook.
 4. Enable Google as an authentication provider.
 5. Disable email/password and anonymous signups. Google should be the only
    enabled provider.
-6. Set the production site URL and add each `/auth/callback` URL to the
+6. Set the environment's site URL and add its `/auth/callback` URL to the
    redirect allowlist.
 7. Copy `.env.example` to `.env.local` and supply:
    - `NEXT_PUBLIC_SUPABASE_URL`
@@ -22,6 +28,10 @@ Google Cloud project. Its External audience is published to production and the
 web client redirects to:
 
 `https://hsqdrrebcowvieyvmxvl.supabase.co/auth/v1/callback`
+
+The same Google client also allows the development callback:
+
+`https://aksfajzlkhlslqsexzus.supabase.co/auth/v1/callback`
 
 Unauthenticated page requests redirect directly to Google. The account chooser
 receives `hd=theodo.com` as a convenience, while the database hook and

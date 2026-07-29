@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
     "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
-    "deploy": "npm run build && wrangler deploy --config dist/server/wrangler.json",
+    "deploy": "npm run deploy:dev",
+    "deploy:dev": "npm run build && wrangler deploy --config dist/server/wrangler.json --name mzansi-voter-dev --domain dev.mzansivoter.co.za",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "vitest --config vitest.config.ts run && npm run build && node --test tests/rendered-html.test.mjs",
     "test:unit": "vitest --config vitest.config.ts run",
