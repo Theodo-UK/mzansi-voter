@@ -3,7 +3,7 @@ import { initialItems } from "./fixture";
 import {
   applyBudgetCutoff,
   deriveDisplayName,
-  isAllowedTheodoEmail,
+  isAllowedOfficeEmail,
   rankItems,
   type GroceryItem,
 } from "./voting";
@@ -31,15 +31,17 @@ describe("email access and display names", () => {
     );
   });
 
-  it("accepts the exact Theodo domain case-insensitively", () => {
-    expect(isAllowedTheodoEmail(" Liam.Hitchcock@THEODO.COM ")).toBe(true);
+  it("accepts the exact office domains case-insensitively", () => {
+    expect(isAllowedOfficeEmail(" Liam.Hitchcock@THEODO.COM ")).toBe(true);
+    expect(isAllowedOfficeEmail(" Fabien.Zuchet@ALEIOS.COM ")).toBe(true);
   });
 
   it("rejects other and suffix-lookalike domains", () => {
-    expect(isAllowedTheodoEmail("liam.hitchcock@gmail.com")).toBe(false);
-    expect(isAllowedTheodoEmail("liam@theodo.com.example")).toBe(false);
-    expect(isAllowedTheodoEmail("liam@evil.com@theodo.com")).toBe(false);
-    expect(isAllowedTheodoEmail("theodo.com")).toBe(false);
+    expect(isAllowedOfficeEmail("liam.hitchcock@gmail.com")).toBe(false);
+    expect(isAllowedOfficeEmail("liam@theodo.com.example")).toBe(false);
+    expect(isAllowedOfficeEmail("fabien@aleios.com.example")).toBe(false);
+    expect(isAllowedOfficeEmail("liam@evil.com@theodo.com")).toBe(false);
+    expect(isAllowedOfficeEmail("theodo.com")).toBe(false);
   });
 });
 

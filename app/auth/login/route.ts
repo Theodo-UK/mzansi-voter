@@ -17,7 +17,6 @@ export async function GET(request: NextRequest) {
     options: {
       redirectTo: callbackUrl.toString(),
       queryParams: {
-        hd: "theodo.com",
         prompt: "select_account",
       },
     },

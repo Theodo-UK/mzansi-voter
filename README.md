@@ -35,7 +35,7 @@ scoped to the account that owns the `mzansi-voter` Worker.
 
 ## Connect Supabase
 
-The database schema, Theodo-only signup hook, Liam admin bootstrap, and
+The database schema, office-domain signup hook, Liam admin bootstrap, and
 row-level policies live in
 `supabase/migrations/20260727000000_initial_mvp.sql`.
 

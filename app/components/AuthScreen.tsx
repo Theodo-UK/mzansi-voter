@@ -12,7 +12,7 @@ export function AuthScreen({ state, message }: AuthScreenProps) {
   const isLoading = state === "loading";
   const heading =
     state === "denied"
-      ? "This ballot is for Theodo."
+      ? "This ballot is for the office crew."
       : state === "error"
         ? "The trolley hit a pothole."
         : "Office groceries without the committee meeting.";
@@ -39,7 +39,7 @@ export function AuthScreen({ state, message }: AuthScreenProps) {
         <h1>{heading}</h1>
         <p>
           {message ??
-            "Sign in with your Theodo Google account to suggest, vote, and see what makes Friday's trolley."}
+            "Sign in with your Theodo or Aleios Google account to suggest, vote, and see what makes Friday's trolley."}
         </p>
 
         {isLoading ? (
@@ -50,7 +50,7 @@ export function AuthScreen({ state, message }: AuthScreenProps) {
 
         <div className="auth-security">
           <LockKeyhole aria-hidden="true" size={15} />
-          Only verified @theodo.com accounts can enter.
+          Only verified @theodo.com or @aleios.com accounts can enter.
         </div>
       </section>
     </main>

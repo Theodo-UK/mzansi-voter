@@ -123,7 +123,7 @@ export function deriveDisplayName(email: string) {
     .join(" ");
 }
 
-export function isAllowedTheodoEmail(email: string) {
+export function isAllowedOfficeEmail(email: string) {
   const normalised = email.trim().toLowerCase();
-  return /^[^@\s]+@theodo[.]com$/.test(normalised);
+  return /^[^@\s]+@(theodo[.]com|aleios[.]com)$/.test(normalised);
 }

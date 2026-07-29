@@ -4,7 +4,7 @@ export default function AccessDeniedPage() {
   return (
     <AuthScreen
       state="denied"
-      message="Use a verified @theodo.com Google account to enter Mzansi Voter."
+      message="Use a verified @theodo.com or @aleios.com Google account to enter Mzansi Voter."
     />
   );
 }

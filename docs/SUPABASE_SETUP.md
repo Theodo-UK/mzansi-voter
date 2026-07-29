@@ -23,10 +23,10 @@ web client redirects to:
 
 `https://hsqdrrebcowvieyvmxvl.supabase.co/auth/v1/callback`
 
-Unauthenticated page requests redirect directly to Google. The account chooser
-receives `hd=theodo.com` as a convenience, while the database hook and
-row-level security are the authoritative provider and domain guards.
+Unauthenticated page requests redirect directly to Google. The database hook
+and row-level security allow verified `@theodo.com` and `@aleios.com`
+accounts.
 
 The migration creates the Cape Town group, derives display names from verified
 emails, assigns `liam.hitchcock@theodo.com` as admin, assigns every other
-accepted Theodo account as a member, and enables row-level security.
+accepted office account as a member, and enables row-level security.
