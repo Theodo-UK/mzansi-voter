@@ -170,18 +170,8 @@ function SupabaseShoppingApp({
       await refresh();
     },
   };
-  const dataVersion = JSON.stringify([
-    data.retailer,
-    data.budgetCents,
-    data.nextOrderDate,
-    data.cutoffTime,
-    data.items,
-    data.user.role,
-  ]);
-
   return (
     <MzansiVoterApp
-      key={dataVersion}
       user={data.user}
       groupName={data.groupName}
       startingRetailer={data.retailer}

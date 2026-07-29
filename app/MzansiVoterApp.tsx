@@ -115,11 +115,40 @@ export function MzansiVoterApp({
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [notice, setNotice] = useState("");
   const [adminPreview, setAdminPreview] = useState(user.role === "admin");
+  const [sharedData, setSharedData] = useState({
+    items: startingItems,
+    retailer: startingRetailer,
+    budgetCents: startingBudgetCents,
+    nextOrderDate: startingNextOrderDate,
+    cutoffTime: startingCutoffTime,
+  });
   const budget = useMemo(
     () => applyBudgetCutoff(items, budgetCents),
     [budgetCents, items],
   );
   const isAdmin = showDevtools ? adminPreview : user.role === "admin";
+
+  if (
+    sharedData.items !== startingItems ||
+    sharedData.retailer !== startingRetailer ||
+    sharedData.budgetCents !== startingBudgetCents ||
+    sharedData.nextOrderDate !== startingNextOrderDate ||
+    sharedData.cutoffTime !== startingCutoffTime
+  ) {
+    // Reconcile shared data without remounting local dialog state.
+    setSharedData({
+      items: startingItems,
+      retailer: startingRetailer,
+      budgetCents: startingBudgetCents,
+      nextOrderDate: startingNextOrderDate,
+      cutoffTime: startingCutoffTime,
+    });
+    setItems(startingItems);
+    setRetailer(startingRetailer);
+    setBudgetCents(startingBudgetCents);
+    setNextOrderDate(startingNextOrderDate);
+    setCutoffTime(startingCutoffTime);
+  }
 
   function announce(message: string) {
     setNotice(message);
