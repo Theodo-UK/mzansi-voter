@@ -41,6 +41,40 @@ test("production does not expose the metrics design fixture", async () => {
   assert.equal(response.status, 404);
 });
 
+test("oauth callback distinguishes a missing authorization code", async () => {
+  const response = await render("/auth/callback");
+  assert.equal(response.status, 307);
+
+  const location = new URL(
+    response.headers.get("location"),
+    "http://localhost",
+  );
+  assert.equal(location.pathname, "/auth/denied");
+  assert.equal(location.searchParams.get("reason"), "missing_code");
+});
+
+test("oauth callback reads the authorization code from the request URL", async () => {
+  const response = await render("/auth/callback?code=test-authorization-code");
+  assert.equal(response.status, 307);
+
+  const location = new URL(
+    response.headers.get("location"),
+    "http://localhost",
+  );
+  assert.equal(location.pathname, "/auth/denied");
+  assert.notEqual(location.searchParams.get("reason"), "missing_code");
+});
+
+test("oauth denial offers a fresh Google sign-in", async () => {
+  const response = await render("/auth/denied?reason=expired");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /The trolley hit a pothole/);
+  assert.match(html, /Your sign-in expired before it could finish/);
+  assert.match(html, /Try Google sign-in again/);
+});
+
 test("metrics preview follows the deployment target", async () => {
   const response = await render("/metrics");
 
