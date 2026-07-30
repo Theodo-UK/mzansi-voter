@@ -1,0 +1,21 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment_name: production
+      environment_url: https://mzansivoter.co.za
+      worker_name: mzansi-voter
+      worker_domain: mzansivoter.co.za
+      require_main: true

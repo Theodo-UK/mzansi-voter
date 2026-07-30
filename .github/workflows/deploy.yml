@@ -1,13 +1,24 @@
-name: Deploy production
+name: Deploy
 
 on:
-  push:
-    branches:
-      - main
-
-concurrency:
-  group: production
-  cancel-in-progress: true
+  workflow_call:
+    inputs:
+      environment_name:
+        required: true
+        type: string
+      environment_url:
+        required: true
+        type: string
+      worker_name:
+        required: true
+        type: string
+      worker_domain:
+        required: true
+        type: string
+      require_main:
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -16,17 +27,54 @@ jobs:
   deploy:
     name: Test and deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    environment:
+      name: ${{ inputs.environment_name }}
+      url: ${{ inputs.environment_url }}
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID }}
 
     steps:
+      - name: Require main
+        if: inputs.require_main && github.ref != 'refs/heads/main'
+        shell: bash
+        run: |
+          echo "::error::Production can only be deployed from main."
+          exit 1
+
+      - name: Require deployment configuration
+        shell: bash
+        run: |
+          missing=0
+          for name in \
+            CLOUDFLARE_ACCOUNT_ID \
+            CLOUDFLARE_API_TOKEN \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            NEXT_PUBLIC_SUPABASE_URL \
+            SUPABASE_ACCESS_TOKEN \
+            SUPABASE_DB_PASSWORD \
+            SUPABASE_PROJECT_ID
+          do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::$name is not configured in the ${{ inputs.environment_name }} environment."
+              missing=1
+            fi
+          done
+          exit "$missing"
+
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22.13.0
           cache: npm
@@ -37,12 +85,35 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test and build
-        run: npm test
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Build Worker
+        run: npm run build
+
+      - name: Test built Worker
+        run: node --test tests/rendered-html.test.mjs
+
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1 # v1
+        with:
+          version: 2.110.0
+
+      - name: Link database
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Show migration status
+        run: supabase migration list
+
+      - name: Apply migrations
+        run: supabase db push
+
+      - name: Deploy Edge Functions
+        run: supabase functions deploy product-preview --project-ref "$SUPABASE_PROJECT_ID"
 
       - name: Deploy Worker
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --config dist/server/wrangler.json
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config dist/server/wrangler.json --name ${{ inputs.worker_name }} --domain ${{ inputs.worker_domain }}

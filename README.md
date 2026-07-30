@@ -20,18 +20,15 @@ npm test
 npm run lint
 ```
 
-## Deploy
+## Delivery
 
-Pushes to `main` run the full test suite and deploy the resulting Worker build
-through `.github/workflows/deploy.yml`.
+Changes go through pull requests to `main`. Merging deploys development
+automatically; production is promoted manually from GitHub Actions after the
+development deployment has been verified.
 
-The GitHub repository needs these Actions secrets:
-
-- `CLOUDFLARE_ACCOUNT_ID`
-- `CLOUDFLARE_API_TOKEN`
-
-Create a custom Cloudflare token with **Workers Scripts: Write** permission,
-scoped to the account that owns the `mzansi-voter` Worker.
+The workflows deploy Cloudflare Workers, Supabase migrations, and the
+`product-preview` Edge Function. See [the delivery guide](./docs/DELIVERY.md)
+for the release path and environment configuration.
 
 ## Connect Supabase
 
