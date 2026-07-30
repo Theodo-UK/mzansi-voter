@@ -32,7 +32,7 @@ for the release path and environment configuration.
 
 ## Connect Supabase
 
-The database schema, office-domain signup hook, Liam admin bootstrap, and
+The database schema, office-domain signup hook, administrator bootstrap, and
 row-level policies live in
 `supabase/migrations/20260727000000_initial_mvp.sql`.
 

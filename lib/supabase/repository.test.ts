@@ -11,7 +11,7 @@ describe("admin settings repository", () => {
     const order = vi.fn().mockResolvedValue({
       data: [
         { email: "dale.maske@theodo.com" },
-        { email: "liam.hitchcock@theodo.com" },
+        { email: "fixture.admin@theodo.com" },
       ],
       error: null,
     });
@@ -22,7 +22,7 @@ describe("admin settings repository", () => {
 
     await expect(loadGroupAdminEmails(client, "group-one")).resolves.toEqual([
       "dale.maske@theodo.com",
-      "liam.hitchcock@theodo.com",
+      "fixture.admin@theodo.com",
     ]);
     expect(from).toHaveBeenCalledWith("group_admin_emails");
     expect(eq).toHaveBeenCalledWith("group_id", "group-one");

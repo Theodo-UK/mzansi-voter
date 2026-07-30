@@ -18,9 +18,10 @@ persistence:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
-Google OAuth is owned by `liamhitchcock@gmail.com` in the `mzansi-voter`
-Google Cloud project. Its External audience is published to production and the
-web client redirects to:
+Google OAuth lives in the `mzansi-voter` Google Cloud project. Before handoff,
+verify project ownership is assigned to a Theodo-managed Google group or
+organization rather than an individual account. Its External audience is
+published to production and the web client redirects to:
 
 `https://hsqdrrebcowvieyvmxvl.supabase.co/auth/v1/callback`
 
