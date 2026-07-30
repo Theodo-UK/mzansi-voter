@@ -6,5 +6,11 @@ export default function FixturePage() {
     notFound();
   }
 
-  return <AuthBoundary fixture showDevtools={false} />;
+  return (
+    <AuthBoundary
+      fixture
+      showDevtools={false}
+      insightsHref="/fixture/metrics"
+    />
+  );
 }
