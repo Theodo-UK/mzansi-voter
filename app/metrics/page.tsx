@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { BallotPulse } from "../components/BallotPulse";
 import { AuthScreen } from "../components/AuthScreen";
+import { loadBallotMetrics } from "@/lib/supabase/metrics";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { isAllowedOfficeEmail } from "@/lib/voting";
@@ -41,6 +42,19 @@ export default async function MetricsPage() {
     redirect("/auth/denied");
   }
 
+  let metrics;
+  try {
+    metrics = await loadBallotMetrics(supabase);
+  } catch (error) {
+    console.error("[metrics] Failed to load ballot metrics.", error);
+    return (
+      <AuthScreen
+        state="error"
+        message="Ballot insights could not be loaded."
+      />
+    );
+  }
+
   return (
     <div className="app-shell">
       <header className="site-header">
@@ -59,11 +73,11 @@ export default async function MetricsPage() {
           <ArrowLeft aria-hidden="true" size={15} />
           Back to the voting list
         </Link>
-        <BallotPulse />
+        <BallotPulse metrics={metrics} />
       </main>
 
       <footer className="site-footer">
-        <span>Mzansi Voter · Cape Town</span>
+        <span>Mzansi Voter · {metrics.groupName}</span>
         <span>Office groceries, voted lekker.</span>
       </footer>
     </div>

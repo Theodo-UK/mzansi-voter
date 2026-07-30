@@ -572,6 +572,11 @@ select:focus-visible {
   color: var(--red);
 }
 
+.pulse-delta--neutral {
+  background: rgba(84, 96, 91, 0.1);
+  color: var(--muted);
+}
+
 .pulse-card__body,
 .pulse-card__headline {
   min-height: 98px;
@@ -593,7 +598,10 @@ select:focus-visible {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: conic-gradient(var(--green) 0 90%, rgba(23, 114, 81, 0.13) 90%);
+  background: conic-gradient(
+    var(--green) 0 var(--pulse-percent, 0%),
+    rgba(23, 114, 81, 0.13) var(--pulse-percent, 0%)
+  );
   transform: rotate(-24deg);
 }
 

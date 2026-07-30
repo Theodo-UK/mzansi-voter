@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BallotPulse } from "../../components/BallotPulse";
+import { fixtureBallotMetrics } from "@/lib/metrics";
 
 export default function MetricsFixturePage() {
   if (process.env.NODE_ENV !== "development") {
@@ -26,7 +27,7 @@ export default function MetricsFixturePage() {
           <ArrowLeft aria-hidden="true" size={15} />
           Back to the voting list
         </Link>
-        <BallotPulse />
+        <BallotPulse metrics={fixtureBallotMetrics} prototype />
       </main>
 
       <footer className="site-footer">
