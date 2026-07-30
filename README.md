@@ -38,5 +38,3 @@ row-level policies live in
 
 Follow [docs/SUPABASE_SETUP.md](./docs/SUPABASE_SETUP.md) when a Supabase
 project is ready to be connected.
-
-See [PLAN.md](./PLAN.md) for the agreed scope and delivery sequence.
