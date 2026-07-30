@@ -6,9 +6,13 @@ import Link from "next/link";
 type AuthScreenProps = {
   state: "loading" | "denied" | "error";
   message?: string;
+  action?: {
+    href: string;
+    label: string;
+  };
 };
 
-export function AuthScreen({ state, message }: AuthScreenProps) {
+export function AuthScreen({ state, message, action }: AuthScreenProps) {
   const isLoading = state === "loading";
   const heading =
     state === "denied"
@@ -46,6 +50,12 @@ export function AuthScreen({ state, message }: AuthScreenProps) {
           <div className="auth-loading" role="status">
             Checking your office pass…
           </div>
+        ) : null}
+
+        {action ? (
+          <Link className="button button--google" href={action.href}>
+            {action.label}
+          </Link>
         ) : null}
 
         <div className="auth-security">
