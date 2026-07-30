@@ -18,7 +18,7 @@ function item(overrides: Partial<GroceryItem> = {}): GroceryItem {
     locked: false,
     skipped: false,
     createdAt: "2026-07-27T10:00:00.000Z",
-    createdBy: "Liam Hitchcock",
+    createdBy: "Fixture Admin",
     votes: [],
     ...overrides,
   };
@@ -26,21 +26,21 @@ function item(overrides: Partial<GroceryItem> = {}): GroceryItem {
 
 describe("email access and display names", () => {
   it("derives the agreed display name from the email local-part", () => {
-    expect(deriveDisplayName("liam.hitchcock@theodo.com")).toBe(
-      "Liam Hitchcock",
+    expect(deriveDisplayName("fixture.admin@theodo.com")).toBe(
+      "Fixture Admin",
     );
   });
 
   it("accepts the exact office domains case-insensitively", () => {
-    expect(isAllowedOfficeEmail(" Liam.Hitchcock@THEODO.COM ")).toBe(true);
+    expect(isAllowedOfficeEmail(" Fixture.Admin@THEODO.COM ")).toBe(true);
     expect(isAllowedOfficeEmail(" Fabien.Zuchet@ALEIOS.COM ")).toBe(true);
   });
 
   it("rejects other and suffix-lookalike domains", () => {
-    expect(isAllowedOfficeEmail("liam.hitchcock@gmail.com")).toBe(false);
-    expect(isAllowedOfficeEmail("liam@theodo.com.example")).toBe(false);
+    expect(isAllowedOfficeEmail("fixture.admin@gmail.com")).toBe(false);
+    expect(isAllowedOfficeEmail("admin@theodo.com.example")).toBe(false);
     expect(isAllowedOfficeEmail("fabien@aleios.com.example")).toBe(false);
-    expect(isAllowedOfficeEmail("liam@evil.com@theodo.com")).toBe(false);
+    expect(isAllowedOfficeEmail("admin@evil.com@theodo.com")).toBe(false);
     expect(isAllowedOfficeEmail("theodo.com")).toBe(false);
   });
 });
