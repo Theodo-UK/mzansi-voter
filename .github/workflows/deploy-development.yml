@@ -15,6 +15,7 @@ permissions:
 jobs:
   deploy:
     uses: ./.github/workflows/deploy.yml
+    secrets: inherit
     with:
       environment_name: development
       environment_url: https://dev.mzansivoter.co.za
