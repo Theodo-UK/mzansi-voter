@@ -1,0 +1,22 @@
+name: Deploy development
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: development
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment_name: development
+      environment_url: https://dev.mzansivoter.co.za
+      worker_name: mzansi-voter-dev
+      worker_domain: dev.mzansivoter.co.za
