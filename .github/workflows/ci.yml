@@ -61,3 +61,6 @@ jobs:
 
       - name: Apply migrations from scratch
         run: supabase db reset
+
+      - name: Test database behaviour
+        run: supabase test db

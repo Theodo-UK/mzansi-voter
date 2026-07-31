@@ -7,11 +7,13 @@ Cape Town office.
 
 ```sh
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-The app opens with a local fixture and all interactions enabled. No credentials
-are needed for the product and ranking work.
+Fill `.env.local` with the development Supabase URL and publishable key from
+the GitHub `development` environment. The local app uses the real development
+database and Google sign-in; it does not fall back to sample data.
 
 ## Check it
 

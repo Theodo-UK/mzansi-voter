@@ -19,10 +19,6 @@ import Link from "next/link";
 import { BallotSettingsDialog } from "./components/BallotSettingsDialog";
 import { ItemCard } from "./components/ItemCard";
 import { ItemDialog, type ItemInput } from "./components/ItemDialog";
-import {
-  currentUser as fixtureUser,
-  initialItems as fixtureItems,
-} from "@/lib/fixture";
 import type { AppUser } from "@/lib/supabase/repository";
 import {
   applyBudgetCutoff,
@@ -31,9 +27,6 @@ import {
   type RankedItem,
   type VoteValue,
 } from "@/lib/voting";
-
-const DEFAULT_BUDGET_CENTS = 100_000;
-const DEFAULT_NEXT_ORDER_DATE = "2026-07-31";
 
 export type ShoppingPersistence = {
   saveItem: (input: ItemInput, itemId?: string) => Promise<string>;
@@ -54,17 +47,16 @@ export type ShoppingPersistence = {
 };
 
 type MzansiVoterAppProps = {
-  user?: AppUser;
-  groupName?: string;
-  startingRetailer?: string;
-  startingItems?: GroceryItem[];
-  startingBudgetCents?: number;
-  startingNextOrderDate?: string;
-  startingCutoffTime?: string;
-  persistence?: ShoppingPersistence;
-  showDevtools?: boolean;
+  user: AppUser;
+  groupName: string;
+  startingRetailer: string;
+  startingItems: GroceryItem[];
+  startingBudgetCents: number;
+  startingNextOrderDate: string;
+  startingCutoffTime: string;
+  persistence: ShoppingPersistence;
   insightsHref?: string;
-  onSignOut?: () => void;
+  onSignOut: () => void;
 };
 
 function formatOrderDeadline(orderDate: string, cutoffTime: string) {
@@ -97,21 +89,19 @@ function newItemFrom(input: ItemInput, user: AppUser): GroceryItem {
 }
 
 export function MzansiVoterApp({
-  user = fixtureUser,
-  groupName = "Cape Town",
-  startingRetailer = "Checkers",
-  startingItems = fixtureItems,
-  startingBudgetCents = DEFAULT_BUDGET_CENTS,
-  startingNextOrderDate = DEFAULT_NEXT_ORDER_DATE,
-  startingCutoffTime = "10:00",
+  user,
+  groupName,
+  startingRetailer,
+  startingItems,
+  startingBudgetCents,
+  startingNextOrderDate,
+  startingCutoffTime,
   persistence,
-  showDevtools = process.env.NODE_ENV === "development" &&
-    persistence === undefined,
   insightsHref = process.env.NEXT_PUBLIC_DEPLOY_ENV === "development"
     ? "/metrics"
     : undefined,
   onSignOut,
-}: MzansiVoterAppProps = {}) {
+}: MzansiVoterAppProps) {
   const [items, setItems] = useState<GroceryItem[]>(startingItems);
   const [retailer, setRetailer] = useState(startingRetailer);
   const [budgetCents, setBudgetCents] = useState(startingBudgetCents);
@@ -121,7 +111,6 @@ export function MzansiVoterApp({
   const [itemDialogOpen, setItemDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [notice, setNotice] = useState("");
-  const [adminPreview, setAdminPreview] = useState(user.role === "admin");
   const [sharedData, setSharedData] = useState({
     items: startingItems,
     retailer: startingRetailer,
@@ -133,7 +122,7 @@ export function MzansiVoterApp({
     () => applyBudgetCutoff(items, budgetCents),
     [budgetCents, items],
   );
-  const isAdmin = showDevtools ? adminPreview : user.role === "admin";
+  const isAdmin = user.role === "admin";
 
   if (
     sharedData.items !== startingItems ||
@@ -193,7 +182,7 @@ export function MzansiVoterApp({
       }),
     );
 
-    void persistence?.vote(itemId, nextValue).catch(() => {
+    void persistence.vote(itemId, nextValue).catch(() => {
       setItems(previous);
       announce("Vote failed. The previous ballot has been restored.");
     });
@@ -216,7 +205,7 @@ export function MzansiVoterApp({
         ),
       );
       announce("Item updated.");
-      void persistence?.saveItem(input, itemId).catch(() => {
+      void persistence.saveItem(input, itemId).catch(() => {
         setItems(previous);
         announce("Update failed. The previous item has been restored.");
       });
@@ -227,7 +216,7 @@ export function MzansiVoterApp({
     setItems((current) => [...current, optimisticItem]);
     announce("Suggestion added to the ballot.");
     void persistence
-      ?.saveItem(input)
+      .saveItem(input)
       .then((savedId) => {
         setItems((current) =>
           current.map((item) =>
@@ -252,7 +241,7 @@ export function MzansiVoterApp({
       ),
     );
     void persistence
-      ?.setItemFlags(itemId, { [property]: nextValue })
+      .setItemFlags(itemId, { [property]: nextValue })
       .catch(() => {
         setItems(previous);
         announce("Admin change failed and was rolled back.");
@@ -267,7 +256,7 @@ export function MzansiVoterApp({
       current.filter((candidate) => candidate.id !== itemId),
     );
     announce("Item deleted.");
-    void persistence?.deleteItem(itemId).catch(() => {
+    void persistence.deleteItem(itemId).catch(() => {
       setItems(previous);
       announce("Delete failed. The item has been restored.");
     });
@@ -294,7 +283,7 @@ export function MzansiVoterApp({
     );
     announce("New shopping cycle started.");
     void persistence
-      ?.startNextCycle(Array.from(acceptedIds))
+      .startNextCycle(Array.from(acceptedIds))
       .catch(() => {
         setItems(previous);
         announce("Cycle reset failed. The ballot has been restored.");
@@ -314,7 +303,7 @@ export function MzansiVoterApp({
     const previous = items;
     setItems([]);
     announce("All ballot items cleared.");
-    void persistence?.clearItems().catch(() => {
+    void persistence.clearItems().catch(() => {
       setItems(previous);
       announce("Clear failed. The ballot has been restored.");
     });
@@ -346,7 +335,7 @@ export function MzansiVoterApp({
           <span className="avatar" aria-hidden="true">
             {user.displayName.slice(0, 2).toUpperCase()}
           </span>
-          {isAdmin && persistence ? (
+          {isAdmin ? (
             <Link
               className="icon-button"
               href="/settings"
@@ -359,11 +348,7 @@ export function MzansiVoterApp({
             type="button"
             className="icon-button"
             aria-label="Sign out"
-            onClick={() =>
-              onSignOut
-                ? onSignOut()
-                : announce("Sign-out connects when Supabase is configured.")
-            }
+            onClick={onSignOut}
           >
             <LogOut aria-hidden="true" size={19} />
           </button>
@@ -558,26 +543,6 @@ export function MzansiVoterApp({
         <span>Office groceries, voted lekker.</span>
       </footer>
 
-      {showDevtools ? (
-        <aside className="devtools-toggle" aria-label="Developer preview">
-          <span>Dev preview</span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={isAdmin}
-            onClick={() => {
-              setAdminPreview((current) => !current);
-              if (isAdmin) setSettingsDialogOpen(false);
-            }}
-          >
-            <span className="devtools-toggle__track" aria-hidden="true">
-              <span />
-            </span>
-            Admin mode {isAdmin ? "on" : "off"}
-          </button>
-        </aside>
-      ) : null}
-
       <ItemDialog
         open={itemDialogOpen}
         item={editingItem}
@@ -607,7 +572,7 @@ export function MzansiVoterApp({
           setNextOrderDate(settings.nextOrderDate);
           setCutoffTime(settings.cutoffTime);
           announce("Ballot settings updated.");
-          void persistence?.updateGroupSettings(settings).catch(() => {
+          void persistence.updateGroupSettings(settings).catch(() => {
             setRetailer(previous.retailer);
             setBudgetCents(previous.budgetCents);
             setNextOrderDate(previous.nextOrderDate);

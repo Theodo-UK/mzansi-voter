@@ -572,6 +572,11 @@ select:focus-visible {
   color: var(--red);
 }
 
+.pulse-delta--neutral {
+  background: rgba(84, 96, 91, 0.1);
+  color: var(--muted);
+}
+
 .pulse-card__body,
 .pulse-card__headline {
   min-height: 98px;
@@ -593,7 +598,10 @@ select:focus-visible {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: conic-gradient(var(--green) 0 90%, rgba(23, 114, 81, 0.13) 90%);
+  background: conic-gradient(
+    var(--green) 0 var(--pulse-percent, 0%),
+    rgba(23, 114, 81, 0.13) var(--pulse-percent, 0%)
+  );
   transform: rotate(-24deg);
 }
 
@@ -1485,75 +1493,6 @@ select:focus-visible {
   color: var(--ink);
   font-family: var(--font-display), sans-serif;
   font-weight: 800;
-}
-
-.devtools-toggle {
-  position: fixed;
-  z-index: 45;
-  right: 16px;
-  bottom: 16px;
-  padding: 7px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(8px);
-}
-
-.devtools-toggle > span {
-  display: block;
-  margin: 0 7px 5px;
-  color: var(--orange);
-  font-size: 8px;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.devtools-toggle button {
-  padding: 7px 9px;
-  border: 0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: #f1f0ec;
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-size: 10px;
-  font-weight: 800;
-}
-
-.devtools-toggle button[aria-checked="true"] {
-  background: var(--green-dark);
-  color: white;
-}
-
-.devtools-toggle__track {
-  width: 25px;
-  height: 15px;
-  padding: 2px;
-  border-radius: 999px;
-  display: flex;
-  background: #c7c9c4;
-  transition: background 140ms ease;
-}
-
-.devtools-toggle__track span {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: white;
-  box-shadow: 0 1px 3px rgba(16, 45, 37, 0.22);
-  transition: transform 140ms ease;
-}
-
-.devtools-toggle button[aria-checked="true"] .devtools-toggle__track {
-  background: var(--green);
-}
-
-.devtools-toggle button[aria-checked="true"] .devtools-toggle__track span {
-  transform: translateX(10px);
 }
 
 .app-dialog {

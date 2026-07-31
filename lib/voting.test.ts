@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { initialItems } from "./fixture";
 import {
   applyBudgetCutoff,
   deriveDisplayName,
@@ -18,7 +17,7 @@ function item(overrides: Partial<GroceryItem> = {}): GroceryItem {
     locked: false,
     skipped: false,
     createdAt: "2026-07-27T10:00:00.000Z",
-    createdBy: "Fixture Admin",
+    createdBy: "Test User",
     votes: [],
     ...overrides,
   };
@@ -132,12 +131,5 @@ describe("strict budget cutoff", () => {
 
     expect(result.lockedOverBudget).toBe(true);
     expect(result.lockedTotalCents).toBe(11_000);
-  });
-
-  it("matches the inspected Cape Town fixture and blocks at droewors", () => {
-    const result = applyBudgetCutoff(initialItems, 100_000);
-
-    expect(result.usedCents).toBe(85_098);
-    expect(result.outOfBudget[0]?.id).toBe("droewors");
   });
 });
