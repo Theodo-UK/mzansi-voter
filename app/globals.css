@@ -1322,6 +1322,10 @@ select:focus-visible {
   box-shadow: var(--shadow);
 }
 
+.settings-card + .settings-card {
+  margin-top: 18px;
+}
+
 .settings-card__heading {
   display: flex;
   align-items: flex-start;
@@ -1352,6 +1356,44 @@ select:focus-visible {
   color: var(--muted);
   font-size: 11px;
   line-height: 1.5;
+}
+
+.release-notes-list {
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.release-notes-list li {
+  padding-left: 18px;
+  border-left: 2px solid var(--yellow);
+}
+
+.release-notes-list li + li {
+  margin-top: 20px;
+}
+
+.release-notes-list time {
+  color: var(--orange);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.release-notes-list h3 {
+  margin: 4px 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: 15px;
+  letter-spacing: -0.025em;
+}
+
+.release-notes-list p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.55;
 }
 
 .admin-email-list {

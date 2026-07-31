@@ -7,6 +7,7 @@ import {
   Check,
   LogOut,
   ShieldCheck,
+  Sparkles,
   UserMinus,
   UserPlus,
 } from "lucide-react";
@@ -245,6 +246,37 @@ export function AdminSettingsClient({
               {message}
             </p>
           ) : null}
+        </section>
+
+        <section className="settings-card" aria-labelledby="release-notes-title">
+          <div className="settings-card__heading">
+            <span className="settings-card__icon" aria-hidden="true">
+              <Sparkles size={22} />
+            </span>
+            <div>
+              <h2 id="release-notes-title">Release notes</h2>
+              <p>The latest additions to Mzansi Voter.</p>
+            </div>
+          </div>
+
+          <ul className="release-notes-list">
+            <li>
+              <time dateTime="2026-07-31">31 July 2026</time>
+              <h3>Ballot Pulse is live</h3>
+              <p>
+                See crowd favourites, debated items, rank history, turnout,
+                and fresh suggestions from real ballot data.
+              </p>
+            </li>
+            <li>
+              <time dateTime="2026-07-31">31 July 2026</time>
+              <h3>Checkers out-of-stock flags</h3>
+              <p>
+                Products linked to Checkers are flagged when they are out of
+                stock at the Cape Town office store.
+              </p>
+            </li>
+          </ul>
         </section>
       </section>
     </main>
