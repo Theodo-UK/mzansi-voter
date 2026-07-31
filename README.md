@@ -29,7 +29,8 @@ automatically; production is promoted manually from GitHub Actions after the
 development deployment has been verified.
 
 The workflows deploy Cloudflare Workers, Supabase migrations, and the
-`product-preview` Edge Function. See [the delivery guide](./docs/DELIVERY.md)
+`product-preview` and `product-availability` Edge Functions. See
+[the delivery guide](./docs/DELIVERY.md)
 for the release path and environment configuration.
 
 ## Connect Supabase

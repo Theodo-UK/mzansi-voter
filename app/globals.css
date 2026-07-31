@@ -1075,6 +1075,11 @@ select:focus-visible {
   color: var(--green-dark);
 }
 
+.item-badge--out-of-stock {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
 .vote-cluster {
   display: grid;
   grid-template-columns: 31px minmax(54px, auto) 31px;

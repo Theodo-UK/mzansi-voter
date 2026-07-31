@@ -19,6 +19,7 @@ import Link from "next/link";
 import { BallotSettingsDialog } from "./components/BallotSettingsDialog";
 import { ItemCard } from "./components/ItemCard";
 import { ItemDialog, type ItemInput } from "./components/ItemDialog";
+import type { AvailabilityStatus } from "@/lib/availability";
 import type { AppUser } from "@/lib/supabase/repository";
 import {
   applyBudgetCutoff,
@@ -54,6 +55,7 @@ type MzansiVoterAppProps = {
   startingBudgetCents: number;
   startingNextOrderDate: string;
   startingCutoffTime: string;
+  availabilityByUrl: Record<string, AvailabilityStatus>;
   persistence: ShoppingPersistence;
   insightsHref?: string;
   onSignOut: () => void;
@@ -96,6 +98,7 @@ export function MzansiVoterApp({
   startingBudgetCents,
   startingNextOrderDate,
   startingCutoffTime,
+  availabilityByUrl,
   persistence,
   insightsHref = process.env.NEXT_PUBLIC_DEPLOY_ENV === "development"
     ? "/metrics"
@@ -436,6 +439,7 @@ export function MzansiVoterApp({
             <ItemCard
               key={item.id}
               item={item}
+              availability={availabilityByUrl[item.productUrl]}
               status="accepted"
               currentUserId={user.id}
               isAdmin={isAdmin}
@@ -462,6 +466,7 @@ export function MzansiVoterApp({
                 <ItemCard
                   key={item.id}
                   item={item}
+                  availability={availabilityByUrl[item.productUrl]}
                   status="out"
                   currentUserId={user.id}
                   isAdmin={isAdmin}
@@ -490,6 +495,7 @@ export function MzansiVoterApp({
                 <ItemCard
                   key={item.id}
                   item={item}
+                  availability={availabilityByUrl[item.productUrl]}
                   status="skipped"
                   currentUserId={user.id}
                   isAdmin={isAdmin}

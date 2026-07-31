@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CircleAlert,
   ExternalLink,
   LockKeyhole,
   MoreHorizontal,
@@ -11,6 +12,7 @@ import {
   Trash2,
   UnlockKeyhole,
 } from "lucide-react";
+import type { AvailabilityStatus } from "@/lib/availability";
 import type { RankedItem, VoteValue } from "@/lib/voting";
 import { formatRand } from "@/lib/voting";
 import { ProductPreview } from "./ProductPreview";
@@ -18,6 +20,7 @@ import { VoteButton } from "./VoteButton";
 
 type ItemCardProps = {
   item: RankedItem;
+  availability?: AvailabilityStatus;
   status: "accepted" | "out" | "skipped";
   currentUserId: string;
   isAdmin: boolean;
@@ -30,6 +33,7 @@ type ItemCardProps = {
 
 export function ItemCard({
   item,
+  availability,
   status,
   currentUserId,
   isAdmin,
@@ -66,6 +70,12 @@ export function ItemCard({
 
         <div className="item-meta">
           <span className="item-added-by">Added by {item.createdBy}</span>
+          {availability === "out_of_stock" ? (
+            <span className="item-badge item-badge--out-of-stock">
+              <CircleAlert aria-hidden="true" size={12} />
+              Out of stock
+            </span>
+          ) : null}
           {item.locked ? (
             <span className="item-badge item-badge--locked">
               <LockKeyhole aria-hidden="true" size={12} />

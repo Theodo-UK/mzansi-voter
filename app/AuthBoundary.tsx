@@ -10,6 +10,7 @@ import {
 import { MzansiVoterApp, type ShoppingPersistence } from "./MzansiVoterApp";
 import { AuthScreen } from "./components/AuthScreen";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { loadProductAvailability } from "@/lib/supabase/availability";
 import {
   clearItems,
   deleteItem,
@@ -69,6 +70,22 @@ function SupabaseShoppingApp({
   const dataQuery = useQuery({
     queryKey: ["shopping-data", userId],
     queryFn: () => loadShoppingData(client, userId, email),
+  });
+  const productUrls = useMemo(
+    () =>
+      [
+        ...new Set(
+          dataQuery.data?.items.map(({ productUrl }) => productUrl) ?? [],
+        ),
+      ].sort(),
+    [dataQuery.data],
+  );
+  const availabilityQuery = useQuery({
+    queryKey: ["product-availability", productUrls],
+    queryFn: () => loadProductAvailability(client, productUrls),
+    enabled: productUrls.length > 0,
+    staleTime: 10 * 60 * 1000,
+    retry: false,
   });
 
   useEffect(() => {
@@ -179,6 +196,7 @@ function SupabaseShoppingApp({
       startingBudgetCents={data.budgetCents}
       startingNextOrderDate={data.nextOrderDate}
       startingCutoffTime={data.cutoffTime}
+      availabilityByUrl={availabilityQuery.data ?? {}}
       persistence={persistence}
       onSignOut={() => void onSignOut()}
     />
