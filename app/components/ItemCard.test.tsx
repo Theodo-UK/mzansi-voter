@@ -40,7 +40,12 @@ function renderItem(availability: AvailabilityStatus) {
 
 describe("ItemCard", () => {
   it("flags only confirmed out-of-stock products", () => {
-    expect(renderItem("out_of_stock")).toContain("Out of stock");
+    const outOfStock = renderItem("out_of_stock");
+
+    expect(outOfStock).toContain("Out of stock");
+    expect(outOfStock.indexOf("Out of stock")).toBeLessThan(
+      outOfStock.indexOf("item-meta"),
+    );
     expect(renderItem("available")).not.toContain("Out of stock");
     expect(renderItem("unknown")).not.toContain("Out of stock");
   });

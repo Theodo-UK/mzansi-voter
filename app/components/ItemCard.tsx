@@ -65,17 +65,19 @@ export function ItemCard({
               productName={item.name}
             />
           ) : null}
-          <span className="item-price">{formatRand(item.priceCents)}</span>
+          <span className="item-price-status">
+            <span className="item-price">{formatRand(item.priceCents)}</span>
+            {availability === "out_of_stock" ? (
+              <span className="item-badge item-badge--out-of-stock">
+                <CircleAlert aria-hidden="true" size={12} />
+                Out of stock
+              </span>
+            ) : null}
+          </span>
         </div>
 
         <div className="item-meta">
           <span className="item-added-by">Added by {item.createdBy}</span>
-          {availability === "out_of_stock" ? (
-            <span className="item-badge item-badge--out-of-stock">
-              <CircleAlert aria-hidden="true" size={12} />
-              Out of stock
-            </span>
-          ) : null}
           {item.locked ? (
             <span className="item-badge item-badge--locked">
               <LockKeyhole aria-hidden="true" size={12} />

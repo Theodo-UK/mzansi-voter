@@ -1041,8 +1041,14 @@ select:focus-visible {
   z-index: 45;
 }
 
-.item-price {
+.item-price-status {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.item-price {
   color: var(--ink-soft);
   font-size: 11px;
   font-weight: 750;
@@ -1999,7 +2005,6 @@ select:focus-visible {
   }
 
   .item-price {
-    display: block;
     margin-top: 1px;
     font-size: 9px;
   }
