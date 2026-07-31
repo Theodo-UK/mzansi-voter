@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { BallotPulse } from "../components/BallotPulse";
 import { AuthScreen } from "../components/AuthScreen";
 import { loadBallotMetrics } from "@/lib/supabase/metrics";
@@ -11,10 +11,6 @@ import { isAllowedOfficeEmail } from "@/lib/voting";
 export const dynamic = "force-dynamic";
 
 export default async function MetricsPage() {
-  if (process.env.NEXT_PUBLIC_DEPLOY_ENV !== "development") {
-    notFound();
-  }
-
   if (!getSupabaseConfig()) {
     return (
       <AuthScreen
@@ -65,7 +61,6 @@ export default async function MetricsPage() {
             <small>The office shop, democratically.</small>
           </span>
         </Link>
-        <span className="metrics-preview-badge">Dev preview</span>
       </header>
 
       <main className="metrics-preview-page">

@@ -75,16 +75,10 @@ test("oauth denial offers a fresh Google sign-in", async () => {
   assert.match(html, /Try Google sign-in again/);
 });
 
-test("metrics preview follows the deployment target", async () => {
+test("metrics requires authentication in every deployment", async () => {
   const response = await render("/metrics");
-
-  if (process.env.NEXT_PUBLIC_DEPLOY_ENV === "development") {
-    assert.equal(response.status, 307);
-    assert.match(response.headers.get("location") ?? "", /\/auth\/login$/);
-    return;
-  }
-
-  assert.equal(response.status, 404);
+  assert.equal(response.status, 307);
+  assert.match(response.headers.get("location") ?? "", /\/auth\/login$/);
 });
 
 test("production redirects anonymous settings visitors", async () => {

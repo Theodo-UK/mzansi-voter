@@ -55,7 +55,6 @@ type MzansiVoterAppProps = {
   startingNextOrderDate: string;
   startingCutoffTime: string;
   persistence: ShoppingPersistence;
-  insightsHref?: string;
   onSignOut: () => void;
 };
 
@@ -97,9 +96,6 @@ export function MzansiVoterApp({
   startingNextOrderDate,
   startingCutoffTime,
   persistence,
-  insightsHref = process.env.NEXT_PUBLIC_DEPLOY_ENV === "development"
-    ? "/metrics"
-    : undefined,
   onSignOut,
 }: MzansiVoterAppProps) {
   const [items, setItems] = useState<GroceryItem[]>(startingItems);
@@ -320,12 +316,10 @@ export function MzansiVoterApp({
           </span>
         </a>
         <div className="account-area">
-          {insightsHref ? (
-            <Link className="insights-link" href={insightsHref}>
-              <ChartNoAxesCombined aria-hidden="true" size={16} />
-              <span>Insights</span>
-            </Link>
-          ) : null}
+          <Link className="insights-link" href="/metrics">
+            <ChartNoAxesCombined aria-hidden="true" size={16} />
+            <span>Insights</span>
+          </Link>
           <div className="account-copy">
             <span>{user.displayName}</span>
             <small>
