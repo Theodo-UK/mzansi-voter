@@ -386,20 +386,6 @@ select:focus-visible {
   margin-top: 22px;
 }
 
-.metrics-preview-badge {
-  min-height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  color: var(--muted);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .ballot-pulse__heading p {
   max-width: 470px;
   margin: 0;
@@ -664,8 +650,8 @@ select:focus-visible {
 }
 
 .rank-sparkline {
-  width: 104px;
-  height: 52px;
+  width: 130px;
+  height: 58px;
   flex: 0 0 auto;
   overflow: visible;
 }

@@ -28,6 +28,28 @@ export const testBallotMetrics = {
     previousRank: 7,
     currentRank: 3,
     gain: 4,
+    rankHistory: [
+      {
+        startedAt: "2026-06-30T00:00:00.000+02:00",
+        rank: 9,
+      },
+      {
+        startedAt: "2026-07-07T00:00:00.000+02:00",
+        rank: 6,
+      },
+      {
+        startedAt: "2026-07-14T00:00:00.000+02:00",
+        rank: 8,
+      },
+      {
+        startedAt: "2026-07-21T00:00:00.000+02:00",
+        rank: 7,
+      },
+      {
+        startedAt: "2026-07-28T00:00:00.000+02:00",
+        rank: 3,
+      },
+    ],
   },
   needsCampaign: {
     itemId: "00000000-0000-4000-8000-000000000104",
