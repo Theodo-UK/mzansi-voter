@@ -1,20 +1,13 @@
 import { redirect } from "next/navigation";
 import { AuthBoundary } from "./AuthBoundary";
 import { AuthScreen } from "./components/AuthScreen";
-import {
-  canUseFixture,
-  getSupabaseConfig,
-} from "@/lib/supabase/config";
+import { getSupabaseConfig } from "@/lib/supabase/config";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { isAllowedOfficeEmail } from "@/lib/voting";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  if (canUseFixture()) {
-    return <AuthBoundary fixture />;
-  }
-
   if (!getSupabaseConfig()) {
     return (
       <AuthScreen

@@ -14,7 +14,6 @@ import type { BallotMetrics } from "@/lib/metrics";
 
 type BallotPulseProps = {
   metrics: BallotMetrics;
-  prototype?: boolean;
 };
 
 function signed(value: number) {
@@ -97,10 +96,7 @@ function MetricLabel({
   );
 }
 
-export function BallotPulse({
-  metrics,
-  prototype = false,
-}: BallotPulseProps) {
+export function BallotPulse({ metrics }: BallotPulseProps) {
   const favourite = metrics.crowdFavourite;
   const debated = metrics.mostDebated;
   const mover = metrics.biggestMover;
@@ -127,7 +123,7 @@ export function BallotPulse({
       <header className="ballot-pulse__heading">
         <div>
           <span className="eyebrow">
-            Ballot pulse · {prototype ? "Prototype" : "Live"}
+            Ballot pulse · Live
           </span>
           <h1 id="ballot-pulse-title">The office has opinions.</h1>
           <p>
@@ -359,9 +355,7 @@ export function BallotPulse({
       </div>
 
       <p className="ballot-pulse__note">
-        {prototype
-          ? "Mock numbers for design exploration."
-          : "Live ballot totals. Comparisons use the most recently completed cycle."}
+        Live ballot totals. Comparisons use the most recently completed cycle.
       </p>
     </section>
   );

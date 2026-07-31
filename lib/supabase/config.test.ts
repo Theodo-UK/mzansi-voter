@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canUseFixture, getSupabaseConfig } from "./config";
+import { getSupabaseConfig } from "./config";
 
 describe("Supabase configuration", () => {
   it("returns the configured public client values", () => {
@@ -14,19 +14,12 @@ describe("Supabase configuration", () => {
     });
   });
 
-  it("allows fixture data only outside production", () => {
-    expect(canUseFixture({ NODE_ENV: "development" })).toBe(true);
-    expect(canUseFixture({ NODE_ENV: "test" })).toBe(true);
-    expect(canUseFixture({ NODE_ENV: "production" })).toBe(false);
-  });
-
-  it("does not use fixture data when Supabase is configured", () => {
+  it("fails closed when either public client value is absent", () => {
+    expect(getSupabaseConfig({})).toBeNull();
     expect(
-      canUseFixture({
-        NODE_ENV: "development",
+      getSupabaseConfig({
         NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
-        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "publishable-key",
       }),
-    ).toBe(false);
+    ).toBeNull();
   });
 });

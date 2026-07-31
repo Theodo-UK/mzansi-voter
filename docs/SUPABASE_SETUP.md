@@ -1,8 +1,7 @@
 # Supabase setup
 
-The app runs against its local fixture only in development. Production fails
-closed when Supabase credentials are absent. To enable authentication and
-persistence:
+The app fails closed when Supabase configuration is absent in every
+environment. To enable authentication and persistence:
 
 1. Link the Supabase CLI to the target project.
 2. Run `supabase db push` to apply every pending migration in order.
@@ -15,8 +14,13 @@ persistence:
 7. Set the site URL and add the environment's `/auth/callback` URL to the
    redirect allowlist.
 8. Copy `.env.example` to `.env.local` and supply:
+   - `NEXT_PUBLIC_DEPLOY_ENV=development`
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+For local development against the development project, also allow
+`http://localhost:3000/auth/callback` in Supabase Auth. Local development uses
+the real development database.
 
 Google OAuth lives in the `mzansi-voter` Google Cloud project. Before handoff,
 verify project ownership is assigned to a Theodo-managed Google group or

@@ -1,15 +1,13 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { BallotPulse } from "./BallotPulse";
-import {
-  fixtureBallotMetrics,
-  type BallotMetrics,
-} from "@/lib/metrics";
+import type { BallotMetrics } from "@/lib/metrics";
+import { testBallotMetrics } from "@/tests/ballot-metrics";
 
 describe("BallotPulse", () => {
   it("renders the supplied live metrics", () => {
     const html = renderToStaticMarkup(
-      <BallotPulse metrics={fixtureBallotMetrics} />,
+      <BallotPulse metrics={testBallotMetrics} />,
     );
 
     expect(html).toContain("Ballot pulse · Live");
@@ -20,9 +18,9 @@ describe("BallotPulse", () => {
 
   it("renders honest empty states before enough data exists", () => {
     const emptyMetrics: BallotMetrics = {
-      ...fixtureBallotMetrics,
+      ...testBallotMetrics,
       period: {
-        ...fixtureBallotMetrics.period,
+        ...testBallotMetrics.period,
         previousStartedAt: null,
         previousEndedAt: null,
       },

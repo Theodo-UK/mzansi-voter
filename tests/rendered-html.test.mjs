@@ -31,12 +31,12 @@ test("production redirects anonymous visitors before rendering the ballot", asyn
   );
 });
 
-test("production does not expose the local fixture", async () => {
+test("the removed ballot preview route stays unavailable", async () => {
   const response = await render("/fixture");
   assert.equal(response.status, 404);
 });
 
-test("production does not expose the metrics design fixture", async () => {
+test("the removed metrics preview route stays unavailable", async () => {
   const response = await render("/fixture/metrics");
   assert.equal(response.status, 404);
 });
