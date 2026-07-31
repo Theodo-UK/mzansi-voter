@@ -2010,6 +2010,10 @@ select:focus-visible {
     font-size: 9px;
   }
 
+  .item-price-status {
+    margin-left: 5px;
+  }
+
   .product-preview {
     margin-left: 5px;
     vertical-align: middle;
