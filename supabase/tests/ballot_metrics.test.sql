@@ -1,6 +1,6 @@
 begin;
 
-select plan(21);
+select plan(22);
 
 select has_table(
   'public',
@@ -302,6 +302,15 @@ select is(
   public.get_ballot_metrics()->'biggestMover'->>'name',
   'Debated',
   'current ranks are compared with the latest completed cycle'
+);
+select is(
+  jsonb_array_length(
+    public.get_ballot_metrics_with_history()
+      ->'biggestMover'
+      ->'rankHistory'
+  ),
+  2,
+  'the mover history includes the previous and current cycle ranks'
 );
 select is(
   (

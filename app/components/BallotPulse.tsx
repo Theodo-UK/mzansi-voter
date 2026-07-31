@@ -101,6 +101,19 @@ export function BallotPulse({ metrics }: BallotPulseProps) {
   const debated = metrics.mostDebated;
   const mover = metrics.biggestMover;
   const campaign = metrics.needsCampaign;
+  const moverRankCeiling = Math.max(
+    ...(mover?.rankHistory.map(({ rank }) => rank) ?? [1]),
+  );
+  const moverRankPoints =
+    mover?.rankHistory.map(({ startedAt, rank }, index, history) => ({
+      startedAt,
+      rank,
+      x: 6 + (118 * index) / (history.length - 1),
+      y: 6 + (46 * (rank - 1)) / Math.max(moverRankCeiling - 1, 1),
+    })) ?? [];
+  const moverRankPath = moverRankPoints
+    .map(({ x, y }, index) => `${index === 0 ? "M" : "L"} ${x} ${y}`)
+    .join(" ");
   const debatedTotal = debated ? debated.upVotes + debated.downVotes : 0;
   const debatedUpPercent = debated
     ? Math.round((100 * debated.upVotes) / debatedTotal)
@@ -220,7 +233,7 @@ export function BallotPulse({ metrics }: BallotPulseProps) {
           <MetricLabel
             icon={ChartNoAxesColumnIncreasing}
             title="Biggest mover"
-            description="Largest rank gain since the previous cycle"
+            description="Rank trend across recent cycles"
           />
           <div className="pulse-card__headline">
             <div>
@@ -245,12 +258,21 @@ export function BallotPulse({ metrics }: BallotPulseProps) {
             {mover ? (
               <svg
                 className="rank-sparkline"
-                viewBox="0 0 104 52"
-                aria-hidden="true"
+                viewBox="0 0 130 58"
+                role="img"
+                aria-label={`Rank history: ${mover.rankHistory
+                  .map(({ rank }) => ordinal(rank))
+                  .join(", ")}`}
               >
-                <path d="M4 44 L100 8" />
-                <circle cx="4" cy="44" r="3" />
-                <circle cx="100" cy="8" r="4" />
+                <path d={moverRankPath} />
+                {moverRankPoints.map(({ startedAt, x, y }, index) => (
+                  <circle
+                    key={startedAt}
+                    cx={x}
+                    cy={y}
+                    r={index === moverRankPoints.length - 1 ? 4 : 3}
+                  />
+                ))}
               </svg>
             ) : null}
           </div>

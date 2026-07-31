@@ -14,7 +14,7 @@ describe("metrics repository", () => {
     await expect(loadBallotMetrics(client)).resolves.toEqual(
       testBallotMetrics,
     );
-    expect(rpc).toHaveBeenCalledWith("get_ballot_metrics");
+    expect(rpc).toHaveBeenCalledWith("get_ballot_metrics_with_history");
   });
 
   it("surfaces database errors", async () => {

@@ -664,8 +664,8 @@ select:focus-visible {
 }
 
 .rank-sparkline {
-  width: 104px;
-  height: 52px;
+  width: 130px;
+  height: 58px;
   flex: 0 0 auto;
   overflow: visible;
 }

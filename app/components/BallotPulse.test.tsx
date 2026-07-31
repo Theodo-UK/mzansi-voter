@@ -14,6 +14,9 @@ describe("BallotPulse", () => {
     expect(html).toContain("Dried mango slices");
     expect(html).toContain("90%");
     expect(html).toContain("10 of 12 people");
+    expect(html).toContain(
+      "Rank history: 9th, 6th, 8th, 7th, 3rd",
+    );
   });
 
   it("renders honest empty states before enough data exists", () => {

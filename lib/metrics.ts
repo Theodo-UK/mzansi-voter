@@ -36,6 +36,14 @@ export const ballotMetricsSchema = z.object({
       previousRank: z.number().int().positive(),
       currentRank: z.number().int().positive(),
       gain: z.number().int().positive(),
+      rankHistory: z
+        .array(
+          z.object({
+            startedAt: timestampSchema,
+            rank: z.number().int().positive(),
+          }),
+        )
+        .min(2),
     })
     .nullable(),
   needsCampaign: ballotItemSchema
