@@ -1073,6 +1073,7 @@ select:focus-visible {
   gap: 3px;
   background: rgba(16, 45, 37, 0.07);
   color: var(--ink-soft);
+  font-size: 9px;
   font-weight: 800;
 }
 
