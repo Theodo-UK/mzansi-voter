@@ -34,7 +34,7 @@ Both deployment workflows apply changes in this order:
 
 1. Build and test the Worker.
 2. Apply pending Supabase migrations.
-3. Deploy the `product-preview` Edge Function.
+3. Deploy the `product-preview` and `product-availability` Edge Functions.
 4. Deploy the Cloudflare Worker.
 
 Database migrations must remain backward-compatible with the currently

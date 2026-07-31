@@ -1041,8 +1041,14 @@ select:focus-visible {
   z-index: 45;
 }
 
-.item-price {
+.item-price-status {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.item-price {
   color: var(--ink-soft);
   font-size: 11px;
   font-weight: 750;
@@ -1067,12 +1073,18 @@ select:focus-visible {
   gap: 3px;
   background: rgba(16, 45, 37, 0.07);
   color: var(--ink-soft);
+  font-size: 9px;
   font-weight: 800;
 }
 
 .item-badge--locked {
   background: var(--yellow);
   color: var(--green-dark);
+}
+
+.item-badge--out-of-stock {
+  background: var(--red-soft);
+  color: var(--red);
 }
 
 .vote-cluster {
@@ -1974,9 +1986,12 @@ select:focus-visible {
   }
 
   .item-price {
-    display: block;
     margin-top: 1px;
     font-size: 9px;
+  }
+
+  .item-price-status {
+    margin-left: 5px;
   }
 
   .product-preview {

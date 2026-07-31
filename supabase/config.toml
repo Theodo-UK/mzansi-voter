@@ -23,3 +23,6 @@ uri = "pg-functions://postgres/public/hook_restrict_theodo_signup"
 
 [functions.product-preview]
 verify_jwt = true
+
+[functions.product-availability]
+verify_jwt = true

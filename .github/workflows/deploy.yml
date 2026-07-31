@@ -110,7 +110,9 @@ jobs:
         run: supabase db push
 
       - name: Deploy Edge Functions
-        run: supabase functions deploy product-preview --project-ref "$SUPABASE_PROJECT_ID"
+        run: |
+          supabase functions deploy product-preview --project-ref "$SUPABASE_PROJECT_ID"
+          supabase functions deploy product-availability --project-ref "$SUPABASE_PROJECT_ID"
 
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
