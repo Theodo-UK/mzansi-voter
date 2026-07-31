@@ -404,13 +404,13 @@ select:focus-visible {
   max-width: 470px;
   margin: 0;
   color: rgba(255, 255, 255, 0.67);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
 .ballot-pulse__cycle {
-  min-height: 29px;
-  padding: 0 10px;
+  min-height: 36px;
+  padding: 0 12px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
   display: inline-flex;
@@ -428,16 +428,16 @@ select:focus-visible {
 }
 
 .ballot-pulse__cycle strong {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .ballot-pulse__cycle small {
-  margin-top: 1px;
+  margin-top: 2px;
   color: rgba(255, 255, 255, 0.5);
-  font-size: 7px;
+  font-size: 10px;
 }
 
 .ballot-pulse__grid {
@@ -446,14 +446,14 @@ select:focus-visible {
   margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .pulse-card {
   position: relative;
   min-width: 0;
   min-height: 178px;
-  padding: 16px;
+  padding: 17px;
   border: 1px solid rgba(16, 45, 37, 0.08);
   border-radius: 15px;
   display: flex;
@@ -474,12 +474,12 @@ select:focus-visible {
 .pulse-card__label {
   display: flex;
   align-items: flex-start;
-  gap: 7px;
+  gap: 9px;
 }
 
 .pulse-card__icon {
-  width: 27px;
-  height: 27px;
+  width: 32px;
+  height: 32px;
   flex: 0 0 auto;
   border-radius: 8px;
   display: grid;
@@ -499,7 +499,7 @@ select:focus-visible {
 
 .pulse-card__label-copy strong {
   color: var(--ink-soft);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.07em;
   line-height: 1.15;
@@ -509,7 +509,7 @@ select:focus-visible {
 .pulse-card__label-copy small {
   margin-top: 3px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 650;
   line-height: 1.25;
 }
@@ -527,7 +527,7 @@ select:focus-visible {
   margin: 13px 0 4px;
   overflow: hidden;
   font-family: var(--font-display), sans-serif;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 850;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -538,12 +538,12 @@ select:focus-visible {
 .pulse-card p {
   margin: 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .pulse-card p strong {
   color: var(--green);
-  font-size: 18px;
+  font-size: 22px;
   letter-spacing: -0.04em;
 }
 
@@ -554,10 +554,10 @@ select:focus-visible {
 .pulse-delta {
   width: max-content;
   margin-top: 8px;
-  padding: 3px 6px;
+  padding: 4px 7px;
   border-radius: 999px;
   display: block;
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 800;
   line-height: 1.2;
 }
@@ -615,7 +615,7 @@ select:focus-visible {
   justify-content: center;
   background: #fff8dc;
   color: var(--muted);
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -625,7 +625,7 @@ select:focus-visible {
 .pulse-ring strong {
   color: var(--ink);
   font-family: var(--font-display), sans-serif;
-  font-size: 16px;
+  font-size: 19px;
   letter-spacing: -0.05em;
 }
 
@@ -653,7 +653,7 @@ select:focus-visible {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -691,15 +691,15 @@ select:focus-visible {
 }
 
 .campaign-tally span {
-  min-width: 37px;
-  height: 37px;
+  min-width: 40px;
+  height: 40px;
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 2px;
   font-family: var(--font-display), sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 850;
 }
 
@@ -736,7 +736,7 @@ select:focus-visible {
   justify-content: space-between;
   gap: 8px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 750;
 }
 
@@ -778,7 +778,7 @@ select:focus-visible {
 
 .weekly-bars small {
   color: var(--muted);
-  font-size: 7px;
+  font-size: 10px;
   font-style: normal;
   font-weight: 800;
 }
@@ -788,7 +788,7 @@ select:focus-visible {
   z-index: 1;
   margin: 12px 2px 0;
   color: rgba(255, 255, 255, 0.46);
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.4;
 }
 
@@ -1858,80 +1858,66 @@ select:focus-visible {
   }
 
   .pulse-card {
-    min-height: 184px;
-    padding: 12px;
+    min-height: 174px;
+    padding: 14px;
   }
 
   .pulse-card__label {
-    gap: 5px;
+    gap: 7px;
   }
 
   .pulse-card__icon {
-    width: 23px;
-    height: 23px;
-    border-radius: 7px;
+    width: 29px;
+    height: 29px;
+    border-radius: 8px;
   }
 
   .pulse-card__label-copy strong {
-    font-size: 8px;
+    font-size: 11px;
     letter-spacing: 0.045em;
   }
 
   .pulse-card__label-copy small {
-    font-size: 7.5px;
+    font-size: 10px;
   }
 
   .pulse-card h2 {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 20px;
     white-space: normal;
   }
 
   .pulse-card p {
-    font-size: 8px;
+    font-size: 12px;
   }
 
   .pulse-card p strong {
-    font-size: 15px;
+    font-size: 20px;
   }
 
   .pulse-card__body,
   .pulse-card__headline {
-    min-height: 88px;
-    gap: 7px;
+    min-height: 82px;
+    gap: 10px;
   }
 
   .pulse-ring {
-    width: 54px;
-    height: 54px;
-    padding: 6px;
-  }
-
-  .pulse-card--favourite .pulse-card__body {
-    display: block;
-  }
-
-  .pulse-card--favourite .pulse-card__body > div {
-    max-width: calc(100% - 48px);
-  }
-
-  .pulse-card--favourite .pulse-ring {
-    position: absolute;
-    right: 9px;
-    bottom: 48px;
+    width: 64px;
+    height: 64px;
+    padding: 7px;
   }
 
   .pulse-ring > span {
-    font-size: 5px;
+    font-size: 7px;
   }
 
   .pulse-ring strong {
-    font-size: 12px;
+    font-size: 16px;
   }
 
   .rank-sparkline {
-    width: 62px;
-    height: 40px;
+    width: 72px;
+    height: 42px;
   }
 
   .campaign-tally {
@@ -1939,30 +1925,24 @@ select:focus-visible {
   }
 
   .campaign-tally span {
-    min-width: 24px;
-    height: 28px;
+    min-width: 32px;
+    height: 34px;
     border-radius: 8px;
-    font-size: 10px;
+    font-size: 13px;
   }
 
   .campaign-tally svg {
     width: 10px;
   }
 
-  .pulse-card--underdog .campaign-tally {
-    position: absolute;
-    right: 9px;
-    bottom: 12px;
-  }
-
   .vote-split__legend {
-    font-size: 7px;
+    font-size: 10px;
   }
 
   .pulse-delta {
     margin-top: 6px;
-    padding: 3px 5px;
-    font-size: 7px;
+    padding: 4px 6px;
+    font-size: 9px;
   }
 
   .weekly-bars {
@@ -2096,6 +2076,10 @@ select:focus-visible {
     font-size: 38px;
   }
 
+  .ballot-pulse__grid {
+    grid-template-columns: 1fr;
+  }
+
   .how-it-works__copy {
     font-size: 11px;
   }
@@ -2165,7 +2149,7 @@ select:focus-visible {
   }
 
   .pulse-card {
-    padding: 10px;
+    padding: 13px;
   }
 
   .pulse-card__label {
@@ -2173,16 +2157,8 @@ select:focus-visible {
   }
 
   .pulse-card__icon {
-    width: 21px;
-    height: 21px;
-  }
-
-  .pulse-card__label-copy strong {
-    font-size: 7px;
-  }
-
-  .pulse-card__label-copy small {
-    font-size: 6.5px;
+    width: 27px;
+    height: 27px;
   }
 
   .pulse-card__body,
@@ -2191,13 +2167,13 @@ select:focus-visible {
   }
 
   .pulse-ring {
-    width: 48px;
-    height: 48px;
+    width: 60px;
+    height: 60px;
   }
 
   .rank-sparkline {
-    width: 48px;
-    height: 34px;
+    width: 66px;
+    height: 38px;
   }
 
   .campaign-tally {
@@ -2205,9 +2181,9 @@ select:focus-visible {
   }
 
   .campaign-tally span {
-    min-width: 23px;
-    height: 26px;
-    font-size: 9px;
+    min-width: 30px;
+    height: 32px;
+    font-size: 12px;
   }
 
   .campaign-tally svg {
@@ -2215,7 +2191,7 @@ select:focus-visible {
   }
 
   .vote-split__legend {
-    font-size: 6px;
+    font-size: 10px;
   }
 }
 
