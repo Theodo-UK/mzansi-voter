@@ -276,6 +276,14 @@ export function AdminSettingsClient({
           <ul className="release-notes-list">
             <li>
               <time dateTime="2026-08-03">3 August 2026</time>
+              <h3>Faster Checkers suggestions</h3>
+              <p>
+                Paste a Checkers product link to fill in its name and price
+                automatically.
+              </p>
+            </li>
+            <li>
+              <time dateTime="2026-08-03">3 August 2026</time>
               <h3>Comments on every item</h3>
               <p>
                 Open an item&apos;s comment thread to discuss it with the office

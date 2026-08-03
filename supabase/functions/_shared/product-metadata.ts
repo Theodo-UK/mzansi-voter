@@ -118,6 +118,60 @@ function findStructuredDataImage(html: string) {
   return null;
 }
 
+export type ProductDetails = {
+  name: string;
+  price: number;
+};
+
+function findProductDetails(value: unknown): ProductDetails | null {
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      const details = findProductDetails(entry);
+      if (details) return details;
+    }
+    return null;
+  }
+
+  if (!value || typeof value !== "object") return null;
+
+  const record = value as Record<string, unknown>;
+  const types = Array.isArray(record["@type"])
+    ? record["@type"]
+    : [record["@type"]];
+  const offers = record.offers as Record<string, unknown> | undefined;
+  const price = Number(offers?.price);
+
+  if (
+    types.includes("Product") &&
+    typeof record.name === "string" &&
+    record.name.trim() &&
+    offers?.priceCurrency === "ZAR" &&
+    Number.isFinite(price) &&
+    price > 0
+  ) {
+    return { name: record.name.trim(), price };
+  }
+
+  return findProductDetails(record["@graph"]);
+}
+
+export function extractProductDetails(html: string) {
+  const scripts = html.matchAll(
+    /<script\b[^>]*type=(?:"application\/ld\+json"|'application\/ld\+json')[^>]*>([\s\S]*?)<\/script>/gi,
+  );
+
+  for (const match of scripts) {
+    try {
+      const details = findProductDetails(JSON.parse(match[1] ?? ""));
+      if (details) return details;
+    } catch {
+      continue;
+    }
+  }
+
+  return null;
+}
+
 function decodeHtmlEntities(value: string) {
   return value
     .replaceAll("&amp;", "&")

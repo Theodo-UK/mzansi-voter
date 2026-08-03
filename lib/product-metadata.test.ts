@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  extractProductDetails,
   extractPreviewImage,
   getCheckersProductCode,
   parseCheckersImageUrl,
@@ -105,6 +106,32 @@ describe("product image metadata", () => {
       extractPreviewImage(
         '<meta property="og:image" content="http://cdn.example/mango.webp">',
         pageUrl,
+      ),
+    ).toBeNull();
+  });
+});
+
+describe("product details metadata", () => {
+  it("reads the product name and rand price from JSON-LD", () => {
+    expect(
+      extractProductDetails(`<script type="application/ld+json">
+        {
+          "@context": "https://schema.org/",
+          "@type": "Product",
+          "name": "Darling Fresh Full Cream Milk Bottle 2L",
+          "offers": { "@type": "Offer", "priceCurrency": "ZAR", "price": 37.99 }
+        }
+      </script>`),
+    ).toEqual({
+      name: "Darling Fresh Full Cream Milk Bottle 2L",
+      price: 37.99,
+    });
+  });
+
+  it("ignores incomplete product metadata", () => {
+    expect(
+      extractProductDetails(
+        '<script type="application/ld+json">{"@type":"Product","name":"Milk"}</script>',
       ),
     ).toBeNull();
   });

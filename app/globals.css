@@ -1902,9 +1902,49 @@ select:focus-visible {
   border-color: var(--orange);
 }
 
+.product-link-field {
+  position: relative;
+  display: block;
+}
+
+.item-form .product-link-field input {
+  padding-right: 38px;
+}
+
+.product-link-field__icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.product-link-field__icon--loading {
+  color: var(--muted);
+  animation: product-lookup-spin 0.8s linear infinite;
+}
+
+.product-link-field__icon--success {
+  color: var(--green);
+}
+
+@keyframes product-lookup-spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
 .item-form small {
   color: var(--red);
   font-weight: 650;
+}
+
+.item-form .product-lookup-status {
+  color: var(--muted);
+}
+
+.item-form .product-lookup-status--success {
+  color: var(--green);
 }
 
 .form-row {
