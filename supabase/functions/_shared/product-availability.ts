@@ -22,3 +22,11 @@ export function readProductAvailability(value: unknown): ProductAvailability {
   }
   return "unknown";
 }
+
+export function readProductListAvailability(
+  value: unknown,
+): ProductAvailability {
+  if (!Array.isArray(value)) return "unknown";
+  if (value.length === 0) return "out_of_stock";
+  return readProductAvailability(value[0]);
+}

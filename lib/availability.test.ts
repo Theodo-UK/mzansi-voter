@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { parseAvailabilityResponse } from "./availability";
+import {
+  formatAvailabilityAge,
+  isAvailabilityStale,
+  parseAvailabilityResponse,
+} from "./availability";
 import {
   isProductAUoM,
   readProductAvailability,
+  readProductListAvailability,
 } from "../supabase/functions/_shared/product-availability";
 
 describe("Checkers product availability", () => {
@@ -22,6 +27,7 @@ describe("Checkers product availability", () => {
     expect(readProductAvailability({ isStockAvailable: true })).toBe(
       "unknown",
     );
+    expect(readProductListAvailability([])).toBe("out_of_stock");
   });
 
   it("accepts article and unit codes but not internal catalogue IDs", () => {
@@ -47,5 +53,15 @@ describe("availability response validation", () => {
       [availableUrl]: "out_of_stock",
       [missingUrl]: "unknown",
     });
+  });
+
+  it("refreshes cached availability after six hours", () => {
+    const now = Date.parse("2026-08-03T12:00:00Z");
+
+    expect(isAvailabilityStale("2026-08-03T07:00:00Z", now)).toBe(false);
+    expect(isAvailabilityStale("2026-08-03T06:00:00Z", now)).toBe(true);
+    expect(formatAvailabilityAge("2026-08-03T09:00:00Z", now)).toBe(
+      "Stock checked 3h ago",
+    );
   });
 });

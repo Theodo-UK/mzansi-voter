@@ -1,3 +1,5 @@
+import type { AvailabilityStatus } from "@/lib/availability";
+
 export type VoteValue = -1 | 1;
 export type PurchaseType = "recurring" | "one_off";
 
@@ -21,6 +23,8 @@ export type GroceryItem = {
   productUrl: string;
   previewImagePath?: string;
   previewImageUrl?: string;
+  availabilityStatus: AvailabilityStatus;
+  availabilityCheckedAt?: string;
   purchaseType: PurchaseType;
   locked: boolean;
   skipped: boolean;

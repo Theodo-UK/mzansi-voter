@@ -27,6 +27,8 @@ type ItemRow = {
   price_cents: number;
   product_url: string;
   preview_image_path: string | null;
+  availability_status: "available" | "out_of_stock" | "unknown";
+  availability_checked_at: string | null;
   purchase_type: "recurring" | "one_off";
   locked: boolean;
   skipped: boolean;
@@ -94,6 +96,8 @@ export async function loadShoppingData(
           price_cents,
           product_url,
           preview_image_path,
+          availability_status,
+          availability_checked_at,
           purchase_type,
           locked,
           skipped,
@@ -132,6 +136,8 @@ export async function loadShoppingData(
       productUrl: row.product_url,
       previewImagePath,
       previewImageUrl,
+      availabilityStatus: row.availability_status,
+      availabilityCheckedAt: row.availability_checked_at ?? undefined,
       purchaseType: row.purchase_type,
       locked: row.locked,
       skipped: row.skipped,

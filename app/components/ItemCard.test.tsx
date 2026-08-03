@@ -10,6 +10,7 @@ const item: RankedItem = {
   priceCents: 999,
   productUrl:
     "https://www.checkers.co.za/product/kara-nichhas-sev-and-nuts-snack-100g-10203715EA",
+  availabilityStatus: "unknown",
   purchaseType: "one_off",
   locked: false,
   skipped: false,

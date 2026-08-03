@@ -1,11 +1,12 @@
 import {
   isAuthenticatedOfficeUser,
   json,
+  requiredEnvironment,
   responseHeaders,
 } from "../_shared/edge-function.ts";
 import {
   isProductAUoM,
-  readProductAvailability,
+  readProductListAvailability,
   type ProductAvailability,
 } from "../_shared/product-availability.ts";
 import {
@@ -41,6 +42,10 @@ const upstreamHeaders = {
 };
 
 type StoreContext = Record<string, unknown> & { storeId: string };
+type AvailabilityResult = {
+  productUrl: string;
+  status: ProductAvailability;
+};
 
 function isStoreContext(value: unknown): value is StoreContext {
   return (
@@ -87,12 +92,26 @@ async function fetchAvailability(
   url: string,
   storeContexts: StoreContext[],
   cookie: string,
-): Promise<ProductAvailability> {
-  const productUrl = parseCheckersProductUrl(url);
+): Promise<AvailabilityResult> {
+  let productUrl = parseCheckersProductUrl(url);
+  if (!productUrl) return { productUrl: url, status: "unknown" };
+
+  if (!isProductAUoM(getCheckersProductCode(productUrl) ?? "")) {
+    const response = await fetch(productUrl, {
+      method: "HEAD",
+      headers: upstreamHeaders,
+      redirect: "follow",
+      signal: AbortSignal.timeout(8_000),
+    });
+    productUrl = parseCheckersProductUrl(response.url) ?? productUrl;
+  }
+
   const productCode = productUrl
     ? getCheckersProductCode(productUrl)
     : null;
-  if (!productCode || !isProductAUoM(productCode)) return "unknown";
+  if (!productCode || !isProductAUoM(productCode)) {
+    return { productUrl: productUrl.href, status: "unknown" };
+  }
 
   const response = await fetch(
     `${CHECKERS_ORIGIN}/api/catalogue/get-products-filter`,
@@ -117,10 +136,46 @@ async function fetchAvailability(
   }
 
   const payload = (await response.json()) as { products?: unknown };
-  const product = Array.isArray(payload.products)
-    ? payload.products[0]
-    : null;
-  return readProductAvailability(product);
+  return {
+    productUrl: productUrl.href,
+    status: readProductListAvailability(payload.products),
+  };
+}
+
+async function updateCachedItem(url: string, patch: Record<string, unknown>) {
+  const supabaseUrl = requiredEnvironment("SUPABASE_URL");
+  const serviceRoleKey = requiredEnvironment("SUPABASE_SERVICE_ROLE_KEY");
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/items?product_url=eq.${encodeURIComponent(url)}`,
+    {
+      method: "PATCH",
+      headers: {
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(patch),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`Availability cache returned ${response.status}.`);
+  }
+}
+
+async function cacheAvailability(
+  requestedUrl: string,
+  result: AvailabilityResult,
+) {
+  if (result.productUrl !== requestedUrl) {
+    await updateCachedItem(requestedUrl, { product_url: result.productUrl });
+  }
+  if (result.status === "unknown") return;
+
+  await updateCachedItem(result.productUrl, {
+    availability_status: result.status,
+    availability_checked_at: new Date().toISOString(),
+  });
 }
 
 function unknownItems(urls: string[]) {
@@ -177,9 +232,18 @@ Deno.serve(async (request) => {
   const items = await Promise.all(
     urls.map(async (url) => {
       try {
+        const result = await fetchAvailability(url, storeContexts, cookie);
+        try {
+          await cacheAvailability(url, result);
+        } catch (error) {
+          console.error(
+            "Availability cache update failed:",
+            error instanceof Error ? error.message : "Unknown error",
+          );
+        }
         return {
           url,
-          status: await fetchAvailability(url, storeContexts, cookie),
+          status: result.status,
         };
       } catch (error) {
         console.error(

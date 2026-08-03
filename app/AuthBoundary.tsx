@@ -11,6 +11,7 @@ import { MzansiVoterApp, type ShoppingPersistence } from "./MzansiVoterApp";
 import { AuthScreen } from "./components/AuthScreen";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { loadProductAvailability } from "@/lib/supabase/availability";
+import { isAvailabilityStale } from "@/lib/availability";
 import {
   addItemComment,
   clearItems,
@@ -22,6 +23,7 @@ import {
   startNextCycle,
   updateGroupSettings,
 } from "@/lib/supabase/repository";
+import { parseCheckersProductUrl } from "@/supabase/functions/_shared/product-metadata";
 
 type AuthenticatedUser = {
   id: string;
@@ -72,20 +74,38 @@ function SupabaseShoppingApp({
     queryKey: ["shopping-data", userId],
     queryFn: () => loadShoppingData(client, userId, email),
   });
-  const productUrls = useMemo(
+  const cachedAvailabilityByUrl = useMemo(
+    () =>
+      Object.fromEntries(
+        (dataQuery.data?.items ?? []).map((item) => [
+          item.productUrl,
+          item.availabilityStatus,
+        ]),
+      ),
+    [dataQuery.data],
+  );
+  const staleProductUrls = useMemo(
     () =>
       [
         ...new Set(
-          dataQuery.data?.items.map(({ productUrl }) => productUrl) ?? [],
+          dataQuery.data?.items
+            .filter(
+              ({ productUrl, availabilityCheckedAt }) =>
+                parseCheckersProductUrl(productUrl) &&
+                isAvailabilityStale(availabilityCheckedAt),
+            )
+            .map(({ productUrl }) => productUrl) ?? [],
         ),
-      ].sort(),
+      ]
+        .sort()
+        .slice(0, 20),
     [dataQuery.data],
   );
   const availabilityQuery = useQuery({
-    queryKey: ["product-availability", productUrls],
-    queryFn: () => loadProductAvailability(client, productUrls),
-    enabled: productUrls.length > 0,
-    staleTime: 10 * 60 * 1000,
+    queryKey: ["product-availability", staleProductUrls],
+    queryFn: () => loadProductAvailability(client, staleProductUrls),
+    enabled: staleProductUrls.length > 0,
+    staleTime: Infinity,
     retry: false,
   });
 
@@ -207,7 +227,10 @@ function SupabaseShoppingApp({
       startingNextOrderDate={data.nextOrderDate}
       startingCutoffTime={data.cutoffTime}
       startingCommentsByItemId={data.commentsByItemId}
-      availabilityByUrl={availabilityQuery.data ?? {}}
+      availabilityByUrl={{
+        ...cachedAvailabilityByUrl,
+        ...(availabilityQuery.data ?? {}),
+      }}
       persistence={persistence}
       onSignOut={() => void onSignOut()}
     />

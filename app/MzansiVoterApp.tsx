@@ -83,6 +83,7 @@ function newItemFrom(input: ItemInput, user: AppUser): GroceryItem {
     name: input.name,
     priceCents: Math.round(input.price * 100),
     productUrl: input.productUrl,
+    availabilityStatus: "unknown",
     purchaseType: input.purchaseType,
     locked: false,
     skipped: false,
