@@ -32,6 +32,7 @@ describe("AdminSettingsClient", () => {
     );
 
     expect(html).toContain("Release notes");
+    expect(html).toContain("Livelier item comments");
     expect(html).toContain("Comments on every item");
     expect(html).not.toContain("Admin access");
   });
