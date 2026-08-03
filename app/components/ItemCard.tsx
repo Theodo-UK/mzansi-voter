@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import {
   CircleAlert,
   ExternalLink,
@@ -37,6 +37,10 @@ type ItemCardProps = {
   onToggleSkip: (itemId: string) => void;
   comments: ItemComment[];
   onAddComment: (itemId: string, body: string) => void;
+  onUpdateComment: (itemId: string, commentId: string, body: string) => void;
+  onDeleteComment: (itemId: string, commentId: string) => void;
+  commentsOpen: boolean;
+  onCommentsOpenChange: (open: boolean) => void;
 };
 
 export function ItemCard({
@@ -52,9 +56,11 @@ export function ItemCard({
   onToggleSkip,
   comments,
   onAddComment,
+  onUpdateComment,
+  onDeleteComment,
+  commentsOpen,
+  onCommentsOpenChange,
 }: ItemCardProps) {
-  const [commentsOpen, setCommentsOpen] = useState(false);
-  const cardRef = useRef<HTMLLIElement>(null);
   const myVote = item.votes.find((vote) => vote.userId === currentUserId)?.value;
   const votingDisabled = item.locked || item.skipped;
   const commentLabel = `${comments.length} ${comments.length === 1 ? "comment" : "comments"}`;
@@ -62,28 +68,24 @@ export function ItemCard({
   useEffect(() => {
     if (!commentsOpen) return;
 
-    function closeCommentsOnOutsideClick(event: MouseEvent) {
-      const target = event.target;
-      if (!(target instanceof Node)) return;
+    function closeCommentsOnOutsideClick(event: PointerEvent) {
+      const clickedComments = event.composedPath().some(
+        (target) =>
+          target instanceof Element &&
+          (target.classList.contains("item-comments-panel") ||
+            target.classList.contains("item-comments-toggle")),
+      );
 
-      const card = cardRef.current;
-      const clickedPanel = card
-        ?.querySelector(".item-comments-panel")
-        ?.contains(target);
-      const clickedToggle = card
-        ?.querySelector(".item-comments-toggle")
-        ?.contains(target);
-
-      if (!clickedPanel && !clickedToggle) setCommentsOpen(false);
+      if (!clickedComments) onCommentsOpenChange(false);
     }
 
-    document.addEventListener("click", closeCommentsOnOutsideClick);
+    document.addEventListener("pointerdown", closeCommentsOnOutsideClick);
     return () =>
-      document.removeEventListener("click", closeCommentsOnOutsideClick);
-  }, [commentsOpen]);
+      document.removeEventListener("pointerdown", closeCommentsOnOutsideClick);
+  }, [commentsOpen, onCommentsOpenChange]);
 
   return (
-    <li ref={cardRef} className={`item-card item-card--${status}`}>
+    <li className={`item-card item-card--${status}`}>
       <div className="item-card__summary">
         <div className="item-main">
           <div className="item-title-row">
@@ -160,7 +162,7 @@ export function ItemCard({
           aria-label={`${commentsOpen ? "Hide" : "View"} ${commentLabel} about ${item.name}`}
           aria-expanded={commentsOpen}
           aria-controls={`comments-${item.id}`}
-          onClick={() => setCommentsOpen((open) => !open)}
+          onClick={() => onCommentsOpenChange(!commentsOpen)}
         >
           <MessageCircle aria-hidden="true" size={15} />
           {comments.length}
@@ -210,7 +212,10 @@ export function ItemCard({
           itemId={item.id}
           itemName={item.name}
           comments={comments}
+          currentUserId={currentUserId}
           onAddComment={onAddComment}
+          onUpdateComment={onUpdateComment}
+          onDeleteComment={onDeleteComment}
         />
       ) : null}
     </li>

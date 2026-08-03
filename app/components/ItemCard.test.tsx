@@ -38,12 +38,17 @@ function renderItem(availability: AvailabilityStatus) {
       comments={[
         {
           id: "comment-1",
+          authorId: "user-2",
           author: "Dale",
           body: "Could we try the smaller pack?",
           time: "10:24",
         },
       ]}
       onAddComment={() => undefined}
+      onUpdateComment={() => undefined}
+      onDeleteComment={() => undefined}
+      commentsOpen={false}
+      onCommentsOpenChange={() => undefined}
     />,
   );
 }

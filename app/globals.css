@@ -955,14 +955,55 @@ select:focus-visible {
   position: absolute;
   top: 0;
   left: calc(100% + 10px);
-  width: min(300px, 19vw);
-  max-height: min(480px, calc(100vh - 32px));
+  z-index: 37;
+  width: var(--comments-panel-width, min(300px, 19vw));
+  height: var(--comments-panel-height, auto);
+  max-height: min(760px, calc(100vh - 32px));
   padding: 14px;
   overflow: visible;
   border: 1px solid rgba(16, 45, 37, 0.14);
   border-radius: 12px;
   background: white;
   box-shadow: 0 14px 34px rgba(16, 45, 37, 0.16);
+  display: flex;
+  flex-direction: column;
+}
+
+.item-comments-resize-handle {
+  position: absolute;
+  z-index: 3;
+  touch-action: none;
+}
+
+.item-comments-resize-handle--corner {
+  bottom: 1px;
+  left: 1px;
+  z-index: 4;
+  width: 18px;
+  height: 18px;
+  cursor: nesw-resize;
+}
+
+.item-comments-resize-handle--corner::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 3px,
+    rgba(16, 45, 37, 0.42) 3px 5px
+  );
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+  transform: rotate(90deg);
+}
+
+.item-comments-resize-handle:hover::after,
+.item-comments-resize-handle:focus-visible::after {
+  background-color: var(--green);
+}
+
+.item-comments-resize-handle:focus-visible {
+  outline: 0;
 }
 
 .item-comments-panel > header {
@@ -1029,7 +1070,9 @@ select:focus-visible {
 .item-comments-panel ul {
   margin: 10px 0 0;
   padding: 0;
-  max-height: min(300px, 45vh);
+  min-height: 0;
+  max-height: var(--comments-list-max-height, min(300px, 45vh));
+  flex: 1;
   overflow: auto;
   display: grid;
   gap: 7px;
@@ -1043,11 +1086,59 @@ select:focus-visible {
   background: rgba(255, 255, 255, 0.65);
 }
 
-.item-comments-panel li > div {
+.item-comment-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
+}
+
+.item-comment-header > span,
+.item-comment-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.item-comment-actions button,
+.item-comment-edit button,
+.item-comments-attachment button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.item-comment-actions button:hover,
+.item-comment-edit button:hover,
+.item-comments-attachment button:hover {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.item-comment-edit {
+  margin-top: 6px;
+  display: grid;
+  gap: 4px;
+}
+
+.item-comments-panel .item-comment-edit textarea {
+  height: auto;
+  min-height: 54px;
+  padding: 7px 8px;
+  resize: vertical;
+}
+
+.item-comment-edit > span {
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
 }
 
 .item-comments-panel li strong {
@@ -1071,7 +1162,7 @@ select:focus-visible {
 .item-comments-panel form {
   width: 100%;
   max-width: 440px;
-  margin: 14px auto 0;
+  margin: var(--comments-form-margin-top, 14px) auto 0;
 }
 
 .item-comments-panel form label {
@@ -1085,16 +1176,29 @@ select:focus-visible {
 .item-comments-field {
   position: relative;
   min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
 }
 
-.item-comments-emoji {
+.item-comments-field:focus-within {
+  border-color: var(--orange);
+}
+
+.item-comments-tools {
   position: absolute;
-  top: 50%;
+  bottom: 8px;
   right: 7px;
-  transform: translateY(-50%);
+  display: flex;
+  gap: 4px;
 }
 
-.item-comments-emoji__trigger {
+.item-comments-emoji,
+.item-comments-giphy {
+  position: relative;
+}
+
+.item-comments-tool {
   width: 24px;
   height: 22px;
   padding: 0;
@@ -1108,11 +1212,101 @@ select:focus-visible {
   list-style: none;
 }
 
+.item-comments-tool:hover,
+.item-comments-tool[aria-expanded="true"] {
+  border-color: rgba(23, 114, 81, 0.38);
+  background: var(--green-soft);
+}
+
+.item-comments-giphy__picker {
+  position: absolute;
+  right: -30px;
+  bottom: calc(100% + 8px);
+  z-index: 4;
+  width: min(270px, calc(100vw - 32px));
+  max-height: min(340px, calc(100vh - 80px));
+  padding: 9px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: white;
+  box-shadow: 0 10px 24px rgba(16, 45, 37, 0.16);
+}
+
+.item-comments-giphy__search {
+  height: 34px;
+  margin: 0;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.item-comments-giphy__search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+}
+
+.item-comments-giphy__picker > p {
+  margin: 18px 0;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.item-comments-giphy__results {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.item-comments-giphy__results button {
+  min-width: 0;
+  height: 88px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 6px;
+  background: var(--cream);
+  cursor: pointer;
+}
+
+.item-comments-giphy__results img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.item-comments-giphy__credit {
+  margin-top: 8px;
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-align: right;
+  text-decoration: none;
+}
+
+.item-comments-giphy__thread-credit {
+  margin-top: 0;
+  flex: none;
+}
+
 .item-comments-emoji__choices {
   position: absolute;
   right: 0;
   bottom: calc(100% + 8px);
-  z-index: 1;
+  z-index: 4;
   width: min(280px, calc(100vw - 32px));
   overflow: hidden;
   border: 1px solid var(--line);
@@ -1136,7 +1330,36 @@ select:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 7px;
+  align-items: end;
+}
+
+.item-comments-attachment {
+  min-width: 0;
+  margin: 6px 6px 0;
+  padding: 5px;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
   align-items: center;
+  gap: 7px;
+  background: var(--green-soft);
+}
+
+.item-comments-attachment img {
+  width: 42px;
+  height: 32px;
+  border-radius: 5px;
+  display: block;
+  object-fit: cover;
+}
+
+.item-comments-attachment > span {
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .item-comments-panel textarea {
@@ -1144,14 +1367,20 @@ select:focus-visible {
   width: 100%;
   height: 38px;
   min-height: 38px;
-  padding: 7px 38px 7px 10px;
+  padding: 7px 64px 7px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
+  overflow: hidden;
   resize: none;
   background: white;
   color: var(--ink);
   font: inherit;
   font-size: 12px;
+}
+
+.item-comments-field > textarea {
+  border: 0;
+  outline: 0;
 }
 
 .item-comments-panel textarea:focus {
@@ -1164,13 +1393,29 @@ select:focus-visible {
   font-size: 13px;
 }
 
+.item-comments-panel li > .item-comment-gif {
+  margin-top: 6px;
+  display: grid;
+  gap: 4px;
+}
+
+.item-comment-gif img {
+  width: 100%;
+  max-height: 200px;
+  border-radius: 7px;
+  display: block;
+  object-fit: contain;
+  background: #101d19;
+}
+
 @media (min-width: 1180px) {
   .ballot-shell:has(.item-comments-panel) {
     --comments-column-width: clamp(270px, 23vw, 300px);
   }
 
   .ballot-shell:has(.item-comments-panel) .item-list,
-  .ballot-shell:has(.item-comments-panel) .budget-divider {
+  .ballot-shell:has(.item-comments-panel) .budget-divider,
+  .ballot-shell:has(.item-comments-panel) .admin-actions {
     transform: translateX(
       calc((var(--comments-column-width) + 24px) / -2)
     );
@@ -1200,8 +1445,8 @@ select:focus-visible {
   .item-comments-panel {
     top: calc(100% + 8px);
     right: 0;
-    left: 0;
-    width: auto;
+    left: auto;
+    width: min(var(--comments-panel-width, 100%), 100%);
   }
 }
 

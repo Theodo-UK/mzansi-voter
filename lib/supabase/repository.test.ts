@@ -3,8 +3,10 @@ import { describe, expect, it, vi } from "vitest";
 import {
   addItemComment,
   addGroupAdmin,
+  deleteItemComment,
   loadGroupAdminEmails,
   removeGroupAdmin,
+  updateItemComment,
 } from "./repository";
 
 describe("comments repository", () => {
@@ -26,6 +28,22 @@ describe("comments repository", () => {
       author_id: "user-one",
       body: "Looks good 👍",
     });
+  });
+
+  it("updates and deletes a comment by id", async () => {
+    const updateEq = vi.fn().mockResolvedValue({ error: null });
+    const update = vi.fn().mockReturnValue({ eq: updateEq });
+    const deleteEq = vi.fn().mockResolvedValue({ error: null });
+    const remove = vi.fn().mockReturnValue({ eq: deleteEq });
+    const from = vi.fn().mockReturnValue({ update, delete: remove });
+    const client = { from } as unknown as SupabaseClient;
+
+    await updateItemComment(client, "comment-one", "  Better wording  ");
+    await deleteItemComment(client, "comment-one");
+
+    expect(update).toHaveBeenCalledWith({ body: "Better wording" });
+    expect(updateEq).toHaveBeenCalledWith("id", "comment-one");
+    expect(deleteEq).toHaveBeenCalledWith("id", "comment-one");
   });
 });
 

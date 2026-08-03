@@ -47,6 +47,7 @@ type ItemRow = {
   comments:
     | Array<{
         id: string;
+        author_id: string;
         body: string;
         created_at: string;
         author:
@@ -110,6 +111,7 @@ export async function loadShoppingData(
           ),
           comments:item_comments(
             id,
+            author_id,
             body,
             created_at,
             author:profiles!item_comments_author_id_fkey(display_name)
@@ -159,6 +161,7 @@ export async function loadShoppingData(
         )
         .map((comment) => ({
           id: comment.id,
+          authorId: comment.author_id,
           author: firstRelated(comment.author)?.display_name ?? "Unknown",
           body: comment.body,
           time: new Intl.DateTimeFormat("en-ZA", {
@@ -198,6 +201,29 @@ export async function addItemComment(
     author_id: userId,
     body: body.trim(),
   });
+  if (error) throw error;
+}
+
+export async function updateItemComment(
+  client: SupabaseClient,
+  commentId: string,
+  body: string,
+) {
+  const { error } = await client
+    .from("item_comments")
+    .update({ body: body.trim() })
+    .eq("id", commentId);
+  if (error) throw error;
+}
+
+export async function deleteItemComment(
+  client: SupabaseClient,
+  commentId: string,
+) {
+  const { error } = await client
+    .from("item_comments")
+    .delete()
+    .eq("id", commentId);
   if (error) throw error;
 }
 
