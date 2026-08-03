@@ -1,10 +1,33 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 import {
+  addItemComment,
   addGroupAdmin,
   loadGroupAdminEmails,
   removeGroupAdmin,
 } from "./repository";
+
+describe("comments repository", () => {
+  it("stores a trimmed comment for the current user", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    const from = vi.fn().mockReturnValue({ insert });
+    const client = { from } as unknown as SupabaseClient;
+
+    await addItemComment(
+      client,
+      "item-one",
+      "user-one",
+      "  Looks good 👍  ",
+    );
+
+    expect(from).toHaveBeenCalledWith("item_comments");
+    expect(insert).toHaveBeenCalledWith({
+      item_id: "item-one",
+      author_id: "user-one",
+      body: "Looks good 👍",
+    });
+  });
+});
 
 describe("admin settings repository", () => {
   it("loads the configured admin emails for the active group", async () => {

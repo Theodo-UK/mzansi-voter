@@ -261,6 +261,14 @@ export function AdminSettingsClient({
 
           <ul className="release-notes-list">
             <li>
+              <time dateTime="2026-08-03">3 August 2026</time>
+              <h3>Comments on every item</h3>
+              <p>
+                Open an item&apos;s comment thread to discuss it with the office
+                and add a little context to your vote.
+              </p>
+            </li>
+            <li>
               <time dateTime="2026-07-31">31 July 2026</time>
               <h3>Ballot Pulse is live</h3>
               <p>

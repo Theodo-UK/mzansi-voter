@@ -7,6 +7,13 @@ export type ItemVote = {
   value: VoteValue;
 };
 
+export type ItemComment = {
+  id: string;
+  author: string;
+  body: string;
+  time: string;
+};
+
 export type GroceryItem = {
   id: string;
   name: string;

@@ -25,6 +25,7 @@ import {
   applyBudgetCutoff,
   formatRand,
   type GroceryItem,
+  type ItemComment,
   type RankedItem,
   type VoteValue,
 } from "@/lib/voting";
@@ -45,6 +46,7 @@ export type ShoppingPersistence = {
   }) => Promise<void>;
   clearItems: () => Promise<void>;
   startNextCycle: (acceptedItemIds: string[]) => Promise<void>;
+  addComment: (itemId: string, body: string) => Promise<void>;
 };
 
 type MzansiVoterAppProps = {
@@ -55,6 +57,7 @@ type MzansiVoterAppProps = {
   startingBudgetCents: number;
   startingNextOrderDate: string;
   startingCutoffTime: string;
+  startingCommentsByItemId: Record<string, ItemComment[]>;
   availabilityByUrl: Record<string, AvailabilityStatus>;
   persistence: ShoppingPersistence;
   onSignOut: () => void;
@@ -97,6 +100,7 @@ export function MzansiVoterApp({
   startingBudgetCents,
   startingNextOrderDate,
   startingCutoffTime,
+  startingCommentsByItemId,
   availabilityByUrl,
   persistence,
   onSignOut,
@@ -110,12 +114,16 @@ export function MzansiVoterApp({
   const [itemDialogOpen, setItemDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [notice, setNotice] = useState("");
+  const [commentsByItemId, setCommentsByItemId] = useState(
+    startingCommentsByItemId,
+  );
   const [sharedData, setSharedData] = useState({
     items: startingItems,
     retailer: startingRetailer,
     budgetCents: startingBudgetCents,
     nextOrderDate: startingNextOrderDate,
     cutoffTime: startingCutoffTime,
+    commentsByItemId: startingCommentsByItemId,
   });
   const budget = useMemo(
     () => applyBudgetCutoff(items, budgetCents),
@@ -128,7 +136,8 @@ export function MzansiVoterApp({
     sharedData.retailer !== startingRetailer ||
     sharedData.budgetCents !== startingBudgetCents ||
     sharedData.nextOrderDate !== startingNextOrderDate ||
-    sharedData.cutoffTime !== startingCutoffTime
+    sharedData.cutoffTime !== startingCutoffTime ||
+    sharedData.commentsByItemId !== startingCommentsByItemId
   ) {
     // Reconcile shared data without remounting local dialog state.
     setSharedData({
@@ -137,12 +146,14 @@ export function MzansiVoterApp({
       budgetCents: startingBudgetCents,
       nextOrderDate: startingNextOrderDate,
       cutoffTime: startingCutoffTime,
+      commentsByItemId: startingCommentsByItemId,
     });
     setItems(startingItems);
     setRetailer(startingRetailer);
     setBudgetCents(startingBudgetCents);
     setNextOrderDate(startingNextOrderDate);
     setCutoffTime(startingCutoffTime);
+    setCommentsByItemId(startingCommentsByItemId);
   }
 
   function announce(message: string) {
@@ -184,6 +195,30 @@ export function MzansiVoterApp({
     void persistence.vote(itemId, nextValue).catch(() => {
       setItems(previous);
       announce("Vote failed. The previous ballot has been restored.");
+    });
+  }
+
+  function addComment(itemId: string, body: string) {
+    const previous = commentsByItemId;
+    const time = new Intl.DateTimeFormat("en-ZA", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date());
+    setCommentsByItemId((current) => ({
+      ...current,
+      [itemId]: [
+        ...(current[itemId] ?? []),
+        {
+          id: crypto.randomUUID(),
+          author: user.displayName,
+          body,
+          time,
+        },
+      ],
+    }));
+    void persistence.addComment(itemId, body).catch(() => {
+      setCommentsByItemId(previous);
+      announce("Comment failed. Nothing was posted.");
     });
   }
 
@@ -445,6 +480,8 @@ export function MzansiVoterApp({
               onDelete={handleDelete}
               onToggleLock={(itemId) => toggleProperty(itemId, "locked")}
               onToggleSkip={(itemId) => toggleProperty(itemId, "skipped")}
+              comments={commentsByItemId[item.id] ?? []}
+              onAddComment={addComment}
             />
           ))}
         </ol>
@@ -472,6 +509,8 @@ export function MzansiVoterApp({
                   onDelete={handleDelete}
                   onToggleLock={(itemId) => toggleProperty(itemId, "locked")}
                   onToggleSkip={(itemId) => toggleProperty(itemId, "skipped")}
+                  comments={commentsByItemId[item.id] ?? []}
+                  onAddComment={addComment}
                 />
               ))}
             </ol>
@@ -501,6 +540,8 @@ export function MzansiVoterApp({
                   onDelete={handleDelete}
                   onToggleLock={(itemId) => toggleProperty(itemId, "locked")}
                   onToggleSkip={(itemId) => toggleProperty(itemId, "skipped")}
+                  comments={commentsByItemId[item.id] ?? []}
+                  onAddComment={addComment}
                 />
               ))}
             </ol>
