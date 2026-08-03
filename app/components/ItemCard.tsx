@@ -14,7 +14,10 @@ import {
   Trash2,
   UnlockKeyhole,
 } from "lucide-react";
-import type { AvailabilityStatus } from "@/lib/availability";
+import {
+  formatAvailabilityAge,
+  type AvailabilityStatus,
+} from "@/lib/availability";
 import type { ItemComment, RankedItem, VoteValue } from "@/lib/voting";
 import { formatRand } from "@/lib/voting";
 import { ItemComments } from "./ItemComments";
@@ -102,7 +105,10 @@ export function ItemCard({
             <span className="item-price-status">
               <span className="item-price">{formatRand(item.priceCents)}</span>
               {availability === "out_of_stock" ? (
-                <span className="item-badge item-badge--out-of-stock">
+                <span
+                  className="item-badge item-badge--out-of-stock"
+                  title={formatAvailabilityAge(item.availabilityCheckedAt)}
+                >
                   <CircleAlert aria-hidden="true" size={12} />
                   Out of stock
                 </span>

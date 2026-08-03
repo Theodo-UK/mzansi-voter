@@ -13,6 +13,7 @@ function item(overrides: Partial<GroceryItem> = {}): GroceryItem {
     name: "Test item",
     priceCents: 1_000,
     productUrl: "https://example.com/product",
+    availabilityStatus: "unknown",
     purchaseType: "recurring",
     locked: false,
     skipped: false,

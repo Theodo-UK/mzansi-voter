@@ -9,6 +9,33 @@ const statuses = new Set<AvailabilityStatus>([
   "unknown",
 ]);
 
+export const AVAILABILITY_TTL_MS = 6 * 60 * 60 * 1000;
+
+export function isAvailabilityStale(
+  checkedAt: string | undefined,
+  now = Date.now(),
+) {
+  if (!checkedAt) return true;
+  const checkedAtMs = Date.parse(checkedAt);
+  return (
+    !Number.isFinite(checkedAtMs) || now - checkedAtMs >= AVAILABILITY_TTL_MS
+  );
+}
+
+export function formatAvailabilityAge(
+  checkedAt: string | undefined,
+  now = Date.now(),
+) {
+  if (!checkedAt) return undefined;
+  const checkedAtMs = Date.parse(checkedAt);
+  if (!Number.isFinite(checkedAtMs)) return undefined;
+
+  const hours = Math.max(0, Math.floor((now - checkedAtMs) / 3_600_000));
+  if (hours < 1) return "Stock checked less than an hour ago";
+  if (hours < 24) return `Stock checked ${hours}h ago`;
+  return `Stock checked ${Math.floor(hours / 24)}d ago`;
+}
+
 export function parseAvailabilityResponse(
   urls: string[],
   data: unknown,

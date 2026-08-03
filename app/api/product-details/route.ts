@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       "User-Agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/138.0.0.0 Safari/537.36",
     },
-    redirect: "manual",
+    redirect: "follow",
     signal: AbortSignal.timeout(8_000),
   }).catch(() => null);
   const details = response?.ok
@@ -48,5 +48,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json(details);
+  const canonicalUrl = response
+    ? parseCheckersProductUrl(response.url)?.href
+    : null;
+  return NextResponse.json({
+    ...details,
+    productUrl: canonicalUrl ?? productUrl.href,
+  });
 }

@@ -276,6 +276,14 @@ export function AdminSettingsClient({
           <ul className="release-notes-list">
             <li>
               <time dateTime="2026-08-03">3 August 2026</time>
+              <h3>Fresher Checkers stock checks</h3>
+              <p>
+                Product availability is shared across the office, checked at
+                most once every six hours, and supports older Checkers links.
+              </p>
+            </li>
+            <li>
+              <time dateTime="2026-08-03">3 August 2026</time>
               <h3>Faster Checkers suggestions</h3>
               <p>
                 Paste a Checkers product link to fill in its name and price

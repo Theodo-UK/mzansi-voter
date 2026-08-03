@@ -111,6 +111,7 @@ export function ItemDialog({
       const details = (await response.json()) as {
         name: string;
         price: number;
+        productUrl: string;
       };
       if (lookupRequestRef.current !== requestId) return;
 
@@ -118,6 +119,7 @@ export function ItemDialog({
         current.productUrl.trim() === productUrl
           ? {
               ...current,
+              productUrl: details.productUrl,
               name: nameEditedRef.current ? current.name : details.name,
               price: priceEditedRef.current ? current.price : details.price,
             }
