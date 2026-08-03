@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { Check, LoaderCircle, X } from "lucide-react";
 import { z } from "zod";
 import type { GroceryItem, PurchaseType, RankedItem } from "@/lib/voting";
 
@@ -25,6 +25,8 @@ type ItemDialogProps = {
   onClose: () => void;
   onSave: (input: ItemInput, itemId?: string) => void;
 };
+
+type LookupState = "idle" | "loading" | "success" | "error";
 
 const emptyForm: ItemInput = {
   name: "",
@@ -52,8 +54,12 @@ export function ItemDialog({
   onSave,
 }: ItemDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const lookupRequestRef = useRef(0);
+  const nameEditedRef = useRef(false);
+  const priceEditedRef = useRef(false);
   const [form, setForm] = useState<ItemInput>(() => toForm(item));
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [lookupState, setLookupState] = useState<LookupState>("idle");
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -62,6 +68,9 @@ export function ItemDialog({
     if (open && !dialog.open) {
       setForm(toForm(item));
       setErrors({});
+      setLookupState("idle");
+      nameEditedRef.current = false;
+      priceEditedRef.current = false;
       dialog.showModal();
     }
 
@@ -73,6 +82,53 @@ export function ItemDialog({
   function update<K extends keyof ItemInput>(key: K, value: ItemInput[K]) {
     setForm((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: "" }));
+    if (key === "productUrl") {
+      lookupRequestRef.current += 1;
+      nameEditedRef.current = false;
+      priceEditedRef.current = false;
+      setLookupState("idle");
+    } else if (key === "name") {
+      nameEditedRef.current = true;
+    } else if (key === "price") {
+      priceEditedRef.current = true;
+    }
+  }
+
+  async function populateProductDetails(url = form.productUrl) {
+    const productUrl = url.trim();
+    if (!productUrl || productUrl === item?.productUrl) return;
+
+    const requestId = ++lookupRequestRef.current;
+    setLookupState("loading");
+    try {
+      const response = await fetch("/api/product-details", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: productUrl }),
+      });
+      if (!response.ok) throw new Error("Lookup failed");
+
+      const details = (await response.json()) as {
+        name: string;
+        price: number;
+      };
+      if (lookupRequestRef.current !== requestId) return;
+
+      setForm((current) =>
+        current.productUrl.trim() === productUrl
+          ? {
+              ...current,
+              name: nameEditedRef.current ? current.name : details.name,
+              price: priceEditedRef.current ? current.price : details.price,
+            }
+          : current,
+      );
+      setErrors((current) => ({ ...current, name: "", price: "" }));
+      setLookupState("success");
+    } catch {
+      if (lookupRequestRef.current !== requestId) return;
+      setLookupState("error");
+    }
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -105,8 +161,7 @@ export function ItemDialog({
           <span className="eyebrow">{item ? "Admin edit" : "New suggestion"}</span>
           <h2>{item ? "Update the item" : "Put it to a vote"}</h2>
           <p>
-            Add the exact price and a {retailer} link so the eventual shopper
-            has no detective work.
+            Paste a {retailer} link and we&apos;ll add the item name and price.
           </p>
         </div>
         <button
@@ -124,9 +179,62 @@ export function ItemDialog({
 
       <form className="item-form" onSubmit={handleSubmit}>
         <label>
+          Product link
+          <span className="product-link-field">
+            <input
+              autoFocus
+              type="url"
+              value={form.productUrl}
+              onChange={(event) => update("productUrl", event.target.value)}
+              onPaste={(event) => {
+                const pastedUrl = event.clipboardData.getData("text");
+                window.setTimeout(
+                  () => void populateProductDetails(pastedUrl),
+                  0,
+                );
+              }}
+              onBlur={() => void populateProductDetails()}
+              placeholder="https://www.checkers.co.za/product/..."
+            />
+            {lookupState === "loading" ? (
+              <LoaderCircle
+                className="product-link-field__icon product-link-field__icon--loading"
+                aria-label="Fetching product details"
+                size={17}
+              />
+            ) : null}
+            {lookupState === "success" ? (
+              <Check
+                className="product-link-field__icon product-link-field__icon--success"
+                aria-label="Product details added"
+                size={17}
+              />
+            ) : null}
+          </span>
+          {errors.productUrl ? <small>{errors.productUrl}</small> : null}
+          {lookupState === "loading" ? (
+            <small className="product-lookup-status" aria-live="polite">
+              Fetching product details…
+            </small>
+          ) : null}
+          {lookupState === "success" ? (
+            <small
+              className="product-lookup-status product-lookup-status--success"
+              aria-live="polite"
+            >
+              Details found. Confirm the price before adding.
+            </small>
+          ) : null}
+          {lookupState === "error" ? (
+            <small>
+              Couldn&apos;t read this product. Enter the details manually.
+            </small>
+          ) : null}
+        </label>
+
+        <label>
           Item name
           <input
-            autoFocus
             value={form.name}
             onChange={(event) => update("name", event.target.value)}
             placeholder="e.g. Naartjies"
@@ -145,17 +253,6 @@ export function ItemDialog({
             placeholder="70.00"
           />
           {errors.price ? <small>{errors.price}</small> : null}
-        </label>
-
-        <label>
-          Product link
-          <input
-            type="url"
-            value={form.productUrl}
-            onChange={(event) => update("productUrl", event.target.value)}
-            placeholder="https://..."
-          />
-          {errors.productUrl ? <small>{errors.productUrl}</small> : null}
         </label>
 
         <fieldset className="purchase-options">
