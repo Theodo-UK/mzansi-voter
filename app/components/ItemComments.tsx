@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
-import { Send, SmilePlus } from "lucide-react";
+import { Eye, Send, SmilePlus } from "lucide-react";
 import type { ItemComment } from "@/lib/voting";
 
 type ItemCommentsProps = {
@@ -20,6 +20,7 @@ export function ItemComments({
 }: ItemCommentsProps) {
   const [draft, setDraft] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const retentionTooltipId = useId();
   const emojiContainerRef = useRef<HTMLDivElement>(null);
   const emojiPickerHostRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -100,7 +101,22 @@ export function ItemComments({
       aria-label={`Comments for ${itemName}`}
     >
       <header>
-        <strong>Comments</strong>
+        <span className="item-comments-heading">
+          <strong>Comments</strong>
+          <span className="item-comments-retention">
+            <button
+              type="button"
+              aria-label="About comment retention"
+              aria-describedby={retentionTooltipId}
+            >
+              <Eye aria-hidden="true" size={14} />
+            </button>
+            <span id={retentionTooltipId} role="tooltip">
+              Comments are retained across weeks and are only removed when the
+              item is removed.
+            </span>
+          </span>
+        </span>
       </header>
 
       {comments.length ? (
