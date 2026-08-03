@@ -367,15 +367,13 @@ export function MzansiVoterApp({
           <span className="avatar" aria-hidden="true">
             {user.displayName.slice(0, 2).toUpperCase()}
           </span>
-          {isAdmin ? (
-            <Link
-              className="icon-button"
-              href="/settings"
-              aria-label="Open admin settings"
-            >
-              <UserCog aria-hidden="true" size={19} />
-            </Link>
-          ) : null}
+          <Link
+            className="icon-button"
+            href="/settings"
+            aria-label="Open settings"
+          >
+            <UserCog aria-hidden="true" size={19} />
+          </Link>
           <button
             type="button"
             className="icon-button"
