@@ -12,6 +12,7 @@ import { AuthScreen } from "./components/AuthScreen";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { loadProductAvailability } from "@/lib/supabase/availability";
 import {
+  addItemComment,
   clearItems,
   deleteItem,
   loadShoppingData,
@@ -111,6 +112,11 @@ function SupabaseShoppingApp({
       )
       .on(
         "postgres_changes",
+        { event: "*", schema: "public", table: "item_comments" },
+        invalidate,
+      )
+      .on(
+        "postgres_changes",
         {
           event: "*",
           schema: "public",
@@ -186,6 +192,10 @@ function SupabaseShoppingApp({
       await startNextCycle(client, data.groupId, acceptedItemIds);
       await refresh();
     },
+    addComment: async (itemId, body) => {
+      await addItemComment(client, itemId, userId, body);
+      await refresh();
+    },
   };
   return (
     <MzansiVoterApp
@@ -196,6 +206,7 @@ function SupabaseShoppingApp({
       startingBudgetCents={data.budgetCents}
       startingNextOrderDate={data.nextOrderDate}
       startingCutoffTime={data.cutoffTime}
+      startingCommentsByItemId={data.commentsByItemId}
       availabilityByUrl={availabilityQuery.data ?? {}}
       persistence={persistence}
       onSignOut={() => void onSignOut()}

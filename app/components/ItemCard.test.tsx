@@ -34,6 +34,15 @@ function renderItem(availability: AvailabilityStatus) {
       onDelete={() => undefined}
       onToggleLock={() => undefined}
       onToggleSkip={() => undefined}
+      comments={[
+        {
+          id: "comment-1",
+          author: "Dale",
+          body: "Could we try the smaller pack?",
+          time: "10:24",
+        },
+      ]}
+      onAddComment={() => undefined}
     />,
   );
 }
@@ -48,5 +57,11 @@ describe("ItemCard", () => {
     );
     expect(renderItem("available")).not.toContain("Out of stock");
     expect(renderItem("unknown")).not.toContain("Out of stock");
+  });
+
+  it("shows the comment count on the item", () => {
+    expect(renderItem("available")).toContain(
+      "View 1 comment about Kara Sev &amp; Nuts",
+    );
   });
 });

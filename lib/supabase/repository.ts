@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ItemInput } from "@/app/components/ItemDialog";
-import type { GroceryItem, VoteValue } from "@/lib/voting";
+import type { GroceryItem, ItemComment, VoteValue } from "@/lib/voting";
 
 export type AppUser = {
   id: string;
@@ -18,6 +18,7 @@ export type ShoppingData = {
   nextOrderDate: string;
   cutoffTime: string;
   items: GroceryItem[];
+  commentsByItemId: Record<string, ItemComment[]>;
 };
 
 type ItemRow = {
@@ -36,6 +37,17 @@ type ItemRow = {
         user_id: string;
         value: VoteValue;
         voter:
+          | { display_name: string }
+          | Array<{ display_name: string }>
+          | null;
+      }>
+    | null;
+  comments:
+    | Array<{
+        id: string;
+        body: string;
+        created_at: string;
+        author:
           | { display_name: string }
           | Array<{ display_name: string }>
           | null;
@@ -91,6 +103,12 @@ export async function loadShoppingData(
             user_id,
             value,
             voter:profiles!votes_user_id_fkey(display_name)
+          ),
+          comments:item_comments(
+            id,
+            body,
+            created_at,
+            author:profiles!item_comments_author_id_fkey(display_name)
           )
         `,
       )
@@ -126,6 +144,24 @@ export async function loadShoppingData(
       })),
     };
   });
+  const commentsByItemId = Object.fromEntries(
+    (itemResult.data as unknown as ItemRow[]).map((row) => [
+      row.id,
+      (row.comments ?? [])
+        .toSorted((left, right) =>
+          left.created_at.localeCompare(right.created_at),
+        )
+        .map((comment) => ({
+          id: comment.id,
+          author: firstRelated(comment.author)?.display_name ?? "Unknown",
+          body: comment.body,
+          time: new Intl.DateTimeFormat("en-ZA", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(new Date(comment.created_at)),
+        })),
+    ]),
+  );
 
   return {
     user: {
@@ -141,7 +177,22 @@ export async function loadShoppingData(
     nextOrderDate: groupResult.data.next_order_date as string,
     cutoffTime: groupResult.data.cutoff_time as string,
     items,
+    commentsByItemId,
   };
+}
+
+export async function addItemComment(
+  client: SupabaseClient,
+  itemId: string,
+  userId: string,
+  body: string,
+) {
+  const { error } = await client.from("item_comments").insert({
+    item_id: itemId,
+    author_id: userId,
+    body: body.trim(),
+  });
+  if (error) throw error;
 }
 
 export async function saveItem(
