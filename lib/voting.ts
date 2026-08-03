@@ -11,6 +11,7 @@ export type ItemVote = {
 
 export type ItemComment = {
   id: string;
+  authorId: string;
   author: string;
   body: string;
   time: string;

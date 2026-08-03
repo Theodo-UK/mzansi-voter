@@ -15,6 +15,7 @@ import { isAvailabilityStale } from "@/lib/availability";
 import {
   addItemComment,
   clearItems,
+  deleteItemComment,
   deleteItem,
   loadShoppingData,
   persistVote,
@@ -22,6 +23,7 @@ import {
   setItemFlags,
   startNextCycle,
   updateGroupSettings,
+  updateItemComment,
 } from "@/lib/supabase/repository";
 import { parseCheckersProductUrl } from "@/supabase/functions/_shared/product-metadata";
 
@@ -214,6 +216,14 @@ function SupabaseShoppingApp({
     },
     addComment: async (itemId, body) => {
       await addItemComment(client, itemId, userId, body);
+      await refresh();
+    },
+    updateComment: async (commentId, body) => {
+      await updateItemComment(client, commentId, body);
+      await refresh();
+    },
+    deleteComment: async (commentId) => {
+      await deleteItemComment(client, commentId);
       await refresh();
     },
   };

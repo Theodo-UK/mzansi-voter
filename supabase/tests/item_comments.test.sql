@@ -1,6 +1,6 @@
 begin;
 
-select plan(5);
+select plan(9);
 
 select has_table('public', 'item_comments', 'item comments are stored');
 
@@ -90,6 +90,25 @@ select lives_ok(
   'members can comment on group items'
 );
 
+select lives_ok(
+  $$
+    update public.item_comments
+    set body = 'Keep this updated discussion'
+    where item_id = '40000000-0000-4000-8000-000000000001'
+  $$,
+  'authors can edit their comments'
+);
+
+select is(
+  (
+    select body
+    from public.item_comments
+    where item_id = '40000000-0000-4000-8000-000000000001'
+  ),
+  'Keep this updated discussion',
+  'edited comments keep their new body'
+);
+
 select is(
   (select count(*)::integer from public.item_comments),
   2,
@@ -121,6 +140,22 @@ select is(
   ),
   0,
   'comments are deleted with one-off items'
+);
+
+set local role authenticated;
+
+select lives_ok(
+  $$
+    delete from public.item_comments
+    where item_id = '40000000-0000-4000-8000-000000000001'
+  $$,
+  'authors can delete their comments'
+);
+
+select is(
+  (select count(*)::integer from public.item_comments),
+  0,
+  'deleted comments are removed'
 );
 
 select * from finish();

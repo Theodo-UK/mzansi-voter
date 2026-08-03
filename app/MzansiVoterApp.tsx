@@ -47,6 +47,8 @@ export type ShoppingPersistence = {
   clearItems: () => Promise<void>;
   startNextCycle: (acceptedItemIds: string[]) => Promise<void>;
   addComment: (itemId: string, body: string) => Promise<void>;
+  updateComment: (commentId: string, body: string) => Promise<void>;
+  deleteComment: (commentId: string) => Promise<void>;
 };
 
 type MzansiVoterAppProps = {
@@ -114,6 +116,7 @@ export function MzansiVoterApp({
   const [editingItem, setEditingItem] = useState<RankedItem>();
   const [itemDialogOpen, setItemDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [openCommentsItemId, setOpenCommentsItemId] = useState<string>();
   const [notice, setNotice] = useState("");
   const [commentsByItemId, setCommentsByItemId] = useState(
     startingCommentsByItemId,
@@ -211,6 +214,7 @@ export function MzansiVoterApp({
         ...(current[itemId] ?? []),
         {
           id: crypto.randomUUID(),
+          authorId: user.id,
           author: user.displayName,
           body,
           time,
@@ -220,6 +224,34 @@ export function MzansiVoterApp({
     void persistence.addComment(itemId, body).catch(() => {
       setCommentsByItemId(previous);
       announce("Comment failed. Nothing was posted.");
+    });
+  }
+
+  function updateComment(itemId: string, commentId: string, body: string) {
+    const previous = commentsByItemId;
+    setCommentsByItemId((current) => ({
+      ...current,
+      [itemId]: (current[itemId] ?? []).map((comment) =>
+        comment.id === commentId ? { ...comment, body } : comment,
+      ),
+    }));
+    void persistence.updateComment(commentId, body).catch(() => {
+      setCommentsByItemId(previous);
+      announce("Comment update failed. The previous version was restored.");
+    });
+  }
+
+  function deleteComment(itemId: string, commentId: string) {
+    const previous = commentsByItemId;
+    setCommentsByItemId((current) => ({
+      ...current,
+      [itemId]: (current[itemId] ?? []).filter(
+        (comment) => comment.id !== commentId,
+      ),
+    }));
+    void persistence.deleteComment(commentId).catch(() => {
+      setCommentsByItemId(previous);
+      announce("Comment deletion failed. The comment was restored.");
     });
   }
 
@@ -481,6 +513,12 @@ export function MzansiVoterApp({
               onToggleSkip={(itemId) => toggleProperty(itemId, "skipped")}
               comments={commentsByItemId[item.id] ?? []}
               onAddComment={addComment}
+              onUpdateComment={updateComment}
+              onDeleteComment={deleteComment}
+              commentsOpen={openCommentsItemId === item.id}
+              onCommentsOpenChange={(open) =>
+                setOpenCommentsItemId(open ? item.id : undefined)
+              }
             />
           ))}
         </ol>
@@ -510,6 +548,12 @@ export function MzansiVoterApp({
                   onToggleSkip={(itemId) => toggleProperty(itemId, "skipped")}
                   comments={commentsByItemId[item.id] ?? []}
                   onAddComment={addComment}
+                  onUpdateComment={updateComment}
+                  onDeleteComment={deleteComment}
+                  commentsOpen={openCommentsItemId === item.id}
+                  onCommentsOpenChange={(open) =>
+                    setOpenCommentsItemId(open ? item.id : undefined)
+                  }
                 />
               ))}
             </ol>
@@ -541,6 +585,12 @@ export function MzansiVoterApp({
                   onToggleSkip={(itemId) => toggleProperty(itemId, "skipped")}
                   comments={commentsByItemId[item.id] ?? []}
                   onAddComment={addComment}
+                  onUpdateComment={updateComment}
+                  onDeleteComment={deleteComment}
+                  commentsOpen={openCommentsItemId === item.id}
+                  onCommentsOpenChange={(open) =>
+                    setOpenCommentsItemId(open ? item.id : undefined)
+                  }
                 />
               ))}
             </ol>
