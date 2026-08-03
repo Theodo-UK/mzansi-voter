@@ -47,17 +47,11 @@ export default async function SettingsPage() {
 
   if (profileResult.error || membershipResult.error) {
     return (
-      <AuthScreen
-        state="error"
-        message="Admin settings could not be loaded."
-      />
+      <AuthScreen state="error" message="Settings could not be loaded." />
     );
   }
 
-  if (membershipResult.data.role !== "admin") {
-    redirect("/");
-  }
-
+  const isAdmin = membershipResult.data.role === "admin";
   const groupId = membershipResult.data.group_id as string;
   const groupResult = await supabase
     .from("groups")
@@ -67,27 +61,24 @@ export default async function SettingsPage() {
 
   if (groupResult.error) {
     return (
-      <AuthScreen
-        state="error"
-        message="Admin settings could not be loaded."
-      />
+      <AuthScreen state="error" message="Settings could not be loaded." />
     );
   }
 
-  let adminEmails: string[];
-  try {
-    adminEmails = await loadGroupAdminEmails(supabase, groupId);
-  } catch {
-    return (
-      <AuthScreen
-        state="error"
-        message="Admin settings could not be loaded."
-      />
-    );
+  let adminEmails: string[] = [];
+  if (isAdmin) {
+    try {
+      adminEmails = await loadGroupAdminEmails(supabase, groupId);
+    } catch {
+      return (
+        <AuthScreen state="error" message="Settings could not be loaded." />
+      );
+    }
   }
 
   return (
     <AdminSettingsClient
+      isAdmin={isAdmin}
       groupId={groupId}
       groupName={groupResult.data.name as string}
       displayName={profileResult.data.display_name as string}

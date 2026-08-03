@@ -20,6 +20,7 @@ import {
 import { isAllowedOfficeEmail } from "@/lib/voting";
 
 type AdminSettingsClientProps = {
+  isAdmin: boolean;
   groupId: string;
   groupName: string;
   displayName: string;
@@ -28,6 +29,7 @@ type AdminSettingsClientProps = {
 };
 
 export function AdminSettingsClient({
+  isAdmin,
   groupId,
   groupName,
   displayName,
@@ -143,7 +145,7 @@ export function AdminSettingsClient({
         <div className="account-area">
           <div className="account-copy">
             <span>{displayName}</span>
-            <small>{groupName} · Admin</small>
+            <small>{groupName} · {isAdmin ? "Admin" : "Member"}</small>
           </div>
           <button
             type="button"
@@ -163,90 +165,102 @@ export function AdminSettingsClient({
         </Link>
 
         <div className="settings-heading">
-          <span className="eyebrow">Admin settings</span>
-          <h1 id="settings-title">Who gets the keys?</h1>
+          <span className="eyebrow">
+            {isAdmin ? "Admin settings" : "Mzansi Voter"}
+          </span>
+          <h1 id="settings-title">
+            {isAdmin ? "Who gets the keys?" : "What’s new?"}
+          </h1>
           <p>
-            Admins can manage the ballot, staples, shopping cycles, and other
-            admins for the {groupName} office.
+            {isAdmin
+              ? `Admins can manage the ballot, staples, shopping cycles, and other admins for the ${groupName} office.`
+              : "See the latest additions to Mzansi Voter."}
           </p>
         </div>
 
-        <section className="settings-card" aria-labelledby="admin-access-title">
-          <div className="settings-card__heading">
-            <span className="settings-card__icon" aria-hidden="true">
-              <ShieldCheck size={22} />
-            </span>
-            <div>
-              <h2 id="admin-access-title">Admin access</h2>
-              <p>
-                Add a Theodo or Aleios colleague now. If they have not signed in
-                yet, their access activates on their first Google login.
-              </p>
+        {isAdmin ? (
+          <section className="settings-card" aria-labelledby="admin-access-title">
+            <div className="settings-card__heading">
+              <span className="settings-card__icon" aria-hidden="true">
+                <ShieldCheck size={22} />
+              </span>
+              <div>
+                <h2 id="admin-access-title">Admin access</h2>
+                <p>
+                  Add a Theodo or Aleios colleague now. If they have not signed
+                  in yet, their access activates on their first Google login.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <ul className="admin-email-list" aria-label="Configured admins">
-            {adminEmails.map((adminEmail) => (
-              <li key={adminEmail}>
-                <span>{adminEmail}</span>
-                <span className="admin-email-actions">
-                  <span className="admin-status">
-                    <Check aria-hidden="true" size={13} />
-                    {adminEmail === currentEmail ? "You" : "Admin"}
+            <ul className="admin-email-list" aria-label="Configured admins">
+              {adminEmails.map((adminEmail) => (
+                <li key={adminEmail}>
+                  <span>{adminEmail}</span>
+                  <span className="admin-email-actions">
+                    <span className="admin-status">
+                      <Check aria-hidden="true" size={13} />
+                      {adminEmail === currentEmail ? "You" : "Admin"}
+                    </span>
+                    {adminEmail !== currentEmail ? (
+                      <button
+                        type="button"
+                        className="admin-remove"
+                        aria-label={`Remove admin access for ${adminEmail}`}
+                        disabled={Boolean(removingEmail)}
+                        onClick={() => void removeAdmin(adminEmail)}
+                      >
+                        <UserMinus aria-hidden="true" size={14} />
+                        {removingEmail === adminEmail
+                          ? "Removing…"
+                          : "Remove"}
+                      </button>
+                    ) : null}
                   </span>
-                  {adminEmail !== currentEmail ? (
-                    <button
-                      type="button"
-                      className="admin-remove"
-                      aria-label={`Remove admin access for ${adminEmail}`}
-                      disabled={Boolean(removingEmail)}
-                      onClick={() => void removeAdmin(adminEmail)}
-                    >
-                      <UserMinus aria-hidden="true" size={14} />
-                      {removingEmail === adminEmail ? "Removing…" : "Remove"}
-                    </button>
-                  ) : null}
-                </span>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
 
-          <form className="admin-email-form" onSubmit={addAdmin}>
-            <label htmlFor="admin-email">Add another admin</label>
-            <div>
-              <input
-                id="admin-email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                maxLength={254}
-                required
-                placeholder="name.surname@theodo.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-              <button
-                type="submit"
-                className="button button--primary"
-                disabled={saving || !email.trim()}
+            <form className="admin-email-form" onSubmit={addAdmin}>
+              <label htmlFor="admin-email">Add another admin</label>
+              <div>
+                <input
+                  id="admin-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  maxLength={254}
+                  required
+                  placeholder="name.surname@theodo.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="button button--primary"
+                  disabled={saving || !email.trim()}
+                >
+                  <UserPlus aria-hidden="true" size={16} />
+                  {saving ? "Adding…" : "Add admin"}
+                </button>
+              </div>
+            </form>
+
+            {error ? (
+              <p
+                className="settings-message settings-message--error"
+                role="alert"
               >
-                <UserPlus aria-hidden="true" size={16} />
-                {saving ? "Adding…" : "Add admin"}
-              </button>
-            </div>
-          </form>
-
-          {error ? (
-            <p className="settings-message settings-message--error" role="alert">
-              {error}
-            </p>
-          ) : null}
-          {message ? (
-            <p className="settings-message" role="status">
-              {message}
-            </p>
-          ) : null}
-        </section>
+                {error}
+              </p>
+            ) : null}
+            {message ? (
+              <p className="settings-message" role="status">
+                {message}
+              </p>
+            ) : null}
+          </section>
+        ) : null}
 
         <section className="settings-card" aria-labelledby="release-notes-title">
           <div className="settings-card__heading">
