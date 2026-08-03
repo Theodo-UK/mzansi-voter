@@ -25,5 +25,9 @@ describe("ItemComments", () => {
     expect(html).toContain("Write a comment");
     expect(html).toContain('aria-label="Add emoji"');
     expect(html).toContain("item-comments-emoji__choices");
+    expect(html).toContain('aria-label="About comment retention"');
+    expect(html).toContain(
+      "Comments are retained across weeks and are only removed when the item is removed.",
+    );
   });
 });
