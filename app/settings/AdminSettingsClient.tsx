@@ -276,6 +276,14 @@ export function AdminSettingsClient({
           <ul className="release-notes-list">
             <li>
               <time dateTime="2026-08-03">3 August 2026</time>
+              <h3>Livelier item comments</h3>
+              <p>
+                Search GIPHY, attach a GIF before posting, resize comment
+                threads, and edit or delete your own messages.
+              </p>
+            </li>
+            <li>
+              <time dateTime="2026-08-03">3 August 2026</time>
               <h3>Fresher Checkers stock checks</h3>
               <p>
                 Product availability is shared across the office, checked at
