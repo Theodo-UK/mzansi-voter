@@ -7,7 +7,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { Settings2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 
 const MINUTE_MS = 60 * 1000;
 const HOUR_MS = 60 * MINUTE_MS;
@@ -62,6 +62,14 @@ export function closingIn(minutes: number, now = Date.now()) {
   return capeTownDateTime(new Date(minute * MINUTE_MS));
 }
 
+export function extendClosing(
+  deadlineMs: number,
+  minutes: number,
+  now = Date.now(),
+) {
+  return closingIn(minutes, Math.max(deadlineMs, now));
+}
+
 export function countdownParts(remainingMs: number) {
   const totalSeconds = Math.max(0, Math.ceil(remainingMs / 1000));
 
@@ -90,6 +98,7 @@ type VotingCountdownProps = {
   isAdmin: boolean;
   onLockedChange: (locked: boolean) => void;
   onManage: () => void;
+  onReschedule: (closing: ReturnType<typeof closingIn>) => void;
 };
 
 export function VotingCountdown({
@@ -98,10 +107,14 @@ export function VotingCountdown({
   isAdmin,
   onLockedChange,
   onManage,
+  onReschedule,
 }: VotingCountdownProps) {
   const deadlineMs = votingDeadline(orderDate, cutoffTime).getTime();
   const [now, setNow] = useState(() => Date.now());
   const [celebrating, setCelebrating] = useState(false);
+  // Tied to the deadline so a save, or a change from another admin, closes the editor.
+  const [editingDeadline, setEditingDeadline] = useState<number>();
+  const editing = editingDeadline === deadlineMs;
   const wasOpen = useRef<boolean>(undefined);
   const remainingMs = deadlineMs - now;
   const locked = remainingMs <= 0;
@@ -121,6 +134,10 @@ export function VotingCountdown({
   }, [deadlineMs]);
 
   useEffect(() => onLockedChange(locked), [locked, onLockedChange]);
+
+  function extend(minutes: number) {
+    onReschedule(extendClosing(deadlineMs, minutes));
+  }
 
   useEffect(() => {
     if (!celebrating) return;
@@ -149,13 +166,22 @@ export function VotingCountdown({
               . Every vote is final for this order.
             </p>
             {isAdmin ? (
-              <button
-                type="button"
-                className="button button--primary"
-                onClick={onManage}
-              >
-                Open the next ballot
-              </button>
+              <div className="votes-locked__actions">
+                <button
+                  type="button"
+                  className="button button--primary"
+                  onClick={onManage}
+                >
+                  Open the next ballot
+                </button>
+                <button
+                  type="button"
+                  className="button button--quiet"
+                  onClick={() => extend(10)}
+                >
+                  Reopen for 10 min
+                </button>
+              </div>
             ) : (
               <p>An admin will open the next ballot.</p>
             )}
@@ -205,21 +231,68 @@ export function VotingCountdown({
             }[phase]
           }
         </h2>
-        <p>
-          Votes lock on{" "}
-          <time dateTime={deadline.toISOString()}>
-            {formatDeadline(deadline)}
-          </time>
-        </p>
-        {isAdmin ? (
-          <button
-            type="button"
-            className="polls-countdown__manage"
-            onClick={onManage}
+        {editing ? (
+          <form
+            className="polls-countdown__edit"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const closesAt = String(
+                new FormData(event.currentTarget).get("closesAt"),
+              );
+              setEditingDeadline(undefined);
+              onReschedule({
+                orderDate: closesAt.slice(0, 10),
+                cutoffTime: closesAt.slice(11, 16),
+              });
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setEditingDeadline(undefined);
+            }}
           >
-            <Settings2 aria-hidden="true" size={13} />
-            Change closing time
-          </button>
+            <input
+              type="datetime-local"
+              name="closesAt"
+              aria-label="Votes lock at"
+              defaultValue={`${orderDate}T${cutoffTime.slice(0, 5)}`}
+              required
+              autoFocus
+            />
+            <button type="submit">Save</button>
+            <button type="button" onClick={() => setEditingDeadline(undefined)}>
+              Cancel
+            </button>
+          </form>
+        ) : (
+          <p>
+            Votes lock on{" "}
+            {isAdmin ? (
+              <button
+                type="button"
+                className="polls-countdown__when"
+                aria-label={`Change when votes lock, currently ${formatDeadline(deadline)}`}
+                onClick={() => setEditingDeadline(deadlineMs)}
+              >
+                <time dateTime={deadline.toISOString()}>
+                  {formatDeadline(deadline)}
+                </time>
+                <Pencil aria-hidden="true" size={12} />
+              </button>
+            ) : (
+              <time dateTime={deadline.toISOString()}>
+                {formatDeadline(deadline)}
+              </time>
+            )}
+          </p>
+        )}
+        {isAdmin && !editing ? (
+          <div className="polls-countdown__admin">
+            <button type="button" onClick={() => extend(10)}>
+              +10 min
+            </button>
+            <button type="button" onClick={() => extend(60)}>
+              +1 hour
+            </button>
+          </div>
         ) : null}
       </div>
       <div className="polls-countdown__clock" role="timer">

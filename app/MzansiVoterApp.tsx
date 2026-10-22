@@ -152,6 +152,30 @@ export function MzansiVoterApp({
     window.setTimeout(() => setNotice(""), 2600);
   }
 
+  function saveSettings(
+    settings: Parameters<ShoppingPersistence["updateGroupSettings"]>[0],
+    message = "Ballot settings updated.",
+  ) {
+    const previous = {
+      retailer,
+      budgetCents,
+      nextOrderDate,
+      cutoffTime,
+    };
+    setRetailer(settings.retailer);
+    setBudgetCents(settings.budgetCents);
+    setNextOrderDate(settings.nextOrderDate);
+    setCutoffTime(settings.cutoffTime);
+    announce(message);
+    void persistence.updateGroupSettings(settings).catch(() => {
+      setRetailer(previous.retailer);
+      setBudgetCents(previous.budgetCents);
+      setNextOrderDate(previous.nextOrderDate);
+      setCutoffTime(previous.cutoffTime);
+      announce("Settings update failed and was rolled back.");
+    });
+  }
+
   function handleVote(itemId: string, value: VoteValue) {
     const previous = items;
     const item = items.find((candidate) => candidate.id === itemId);
@@ -442,6 +466,17 @@ export function MzansiVoterApp({
           isAdmin={isAdmin}
           onLockedChange={setVotingLocked}
           onManage={() => setSettingsDialogOpen(true)}
+          onReschedule={(closing) =>
+            saveSettings(
+              {
+                retailer,
+                budgetCents,
+                nextOrderDate: closing.orderDate,
+                cutoffTime: closing.cutoffTime,
+              },
+              "Closing time updated.",
+            )
+          }
         />
 
         <details className="how-it-works" open>
@@ -648,26 +683,7 @@ export function MzansiVoterApp({
         nextOrderDate={nextOrderDate}
         cutoffTime={cutoffTime}
         onClose={() => setSettingsDialogOpen(false)}
-        onSave={(settings) => {
-          const previous = {
-            retailer,
-            budgetCents,
-            nextOrderDate,
-            cutoffTime,
-          };
-          setRetailer(settings.retailer);
-          setBudgetCents(settings.budgetCents);
-          setNextOrderDate(settings.nextOrderDate);
-          setCutoffTime(settings.cutoffTime);
-          announce("Ballot settings updated.");
-          void persistence.updateGroupSettings(settings).catch(() => {
-            setRetailer(previous.retailer);
-            setBudgetCents(previous.budgetCents);
-            setNextOrderDate(previous.nextOrderDate);
-            setCutoffTime(previous.cutoffTime);
-            announce("Settings update failed and was rolled back.");
-          });
-        }}
+        onSave={(settings) => saveSettings(settings)}
       />
 
       <div className={`toast ${notice ? "is-visible" : ""}`} role="status">

@@ -2904,9 +2904,47 @@ select:focus-visible {
   font-size: 12px;
 }
 
-.polls-countdown__manage {
-  min-height: 28px;
+.polls-countdown__when {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dashed rgba(244, 241, 230, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.polls-countdown__when:hover {
+  border-bottom-style: solid;
+}
+
+.polls-countdown__admin,
+.polls-countdown__edit {
   margin-top: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.polls-countdown__edit input {
+  min-height: 30px;
+  padding: 0 9px;
+  border: 1px solid rgba(244, 241, 230, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  color-scheme: dark;
+  font-size: 12px;
+}
+
+.polls-countdown__admin button,
+.polls-countdown__edit button {
+  min-height: 28px;
   padding: 0 11px;
   border: 1px solid rgba(244, 241, 230, 0.3);
   border-radius: 999px;
@@ -2921,7 +2959,14 @@ select:focus-visible {
   transition: background 140ms ease;
 }
 
-.polls-countdown__manage:hover {
+.polls-countdown__edit button[type="submit"] {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--green-dark);
+}
+
+.polls-countdown__admin button:hover,
+.polls-countdown__edit button[type="button"]:hover {
   background: rgba(244, 241, 230, 0.12);
 }
 
@@ -3045,8 +3090,11 @@ select:focus-visible {
   line-height: 1.45;
 }
 
-.votes-locked__copy .button {
+.votes-locked__actions {
   margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .locked-moment {
@@ -3288,7 +3336,10 @@ body:has(.locked-moment[open]) :is(.site-header, .ballot-shell) {
     text-align: center;
   }
 
-  .polls-countdown__clock {
+  .polls-countdown__clock,
+  .polls-countdown__admin,
+  .polls-countdown__edit,
+  .votes-locked__actions {
     justify-content: center;
   }
 
