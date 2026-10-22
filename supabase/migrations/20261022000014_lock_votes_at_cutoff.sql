@@ -18,6 +18,7 @@ $$;
 
 revoke execute on function public.is_voting_open(uuid) from anon, public;
 grant execute on function public.is_voting_open(uuid) to authenticated;
+grant select, insert, update, delete on table public.votes to authenticated;
 
 alter policy "Members can cast their own vote"
 on public.votes
