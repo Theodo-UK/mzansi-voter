@@ -3,6 +3,7 @@ create or replace function public.is_voting_open(target_group_id uuid)
 returns boolean
 language sql
 stable
+security definer
 set search_path = ''
 as $$
   select coalesce(
