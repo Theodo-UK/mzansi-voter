@@ -2850,7 +2850,7 @@ select:focus-visible {
   --digits: var(--yellow);
   position: relative;
   margin: 26px 0 18px;
-  padding: 18px 22px 18px 30px;
+  padding: 18px 22px;
   border-radius: 16px;
   display: flex;
   flex-wrap: wrap;
@@ -2863,21 +2863,6 @@ select:focus-visible {
   text-align: left;
   box-shadow: 0 7px 0 rgba(217, 99, 44, 0.23);
   transition: background 600ms ease;
-}
-
-/* The flag's bands, read top to bottom. */
-.polls-countdown::before {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 8px;
-  background: linear-gradient(
-    #de3831 0 32%,
-    #fff 32% 38%,
-    #007749 38% 62%,
-    #fff 62% 68%,
-    #002395 68%
-  );
-  content: "";
 }
 
 .polls-countdown[data-phase="last-call"] {
@@ -3330,7 +3315,7 @@ body:has(.locked-moment[open]) :is(.site-header, .ballot-shell) {
 
 @media (max-width: 640px) {
   .polls-countdown {
-    padding: 18px 16px 18px 24px;
+    padding: 18px 16px;
     flex-direction: column;
     align-items: stretch;
     text-align: center;
