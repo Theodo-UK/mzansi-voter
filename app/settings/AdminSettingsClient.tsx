@@ -275,6 +275,14 @@ export function AdminSettingsClient({
 
           <ul className="release-notes-list">
             <li>
+              <time dateTime="2026-10-22">22 October 2026</time>
+              <h3>Ballot countdown</h3>
+              <p>
+                A live countdown shows when voting closes. When it hits zero,
+                votes lock until an admin opens the next ballot.
+              </p>
+            </li>
+            <li>
               <time dateTime="2026-08-03">3 August 2026</time>
               <h3>Livelier item comments</h3>
               <p>

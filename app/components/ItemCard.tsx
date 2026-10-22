@@ -30,6 +30,7 @@ type ItemCardProps = {
   status: "accepted" | "out" | "skipped";
   currentUserId: string;
   isAdmin: boolean;
+  votingLocked: boolean;
   onVote: (itemId: string, value: VoteValue) => void;
   onEdit: (item: RankedItem) => void;
   onDelete: (itemId: string) => void;
@@ -49,6 +50,7 @@ export function ItemCard({
   status,
   currentUserId,
   isAdmin,
+  votingLocked,
   onVote,
   onEdit,
   onDelete,
@@ -62,7 +64,7 @@ export function ItemCard({
   onCommentsOpenChange,
 }: ItemCardProps) {
   const myVote = item.votes.find((vote) => vote.userId === currentUserId)?.value;
-  const votingDisabled = item.locked || item.skipped;
+  const votingDisabled = votingLocked || item.locked || item.skipped;
   const commentLabel = `${comments.length} ${comments.length === 1 ? "comment" : "comments"}`;
 
   useEffect(() => {
