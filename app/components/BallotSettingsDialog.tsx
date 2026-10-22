@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import { closingIn } from "./VotingCountdown";
 
 type BallotSettingsDialogProps = {
   open: boolean;
@@ -67,7 +68,8 @@ export function BallotSettingsDialog({
           <span className="eyebrow">Admin settings</span>
           <h2>Set the next ballot</h2>
           <p>
-            Retailer, budget, and order timing apply to the whole office ballot.
+            Retailer, budget, and closing time apply to the whole office
+            ballot.
           </p>
         </div>
         <button
@@ -143,7 +145,7 @@ export function BallotSettingsDialog({
             />
           </label>
           <label>
-            Order time
+            Votes lock at
             <input
               type="time"
               value={time}
@@ -152,6 +154,32 @@ export function BallotSettingsDialog({
             />
           </label>
         </div>
+        <div className="closing-presets" role="group" aria-label="Close voting">
+          <span>Close voting in</span>
+          {(
+            [
+              [1, "1 min"],
+              [15, "15 min"],
+              [60, "1 hour"],
+            ] as const
+          ).map(([minutes, label]) => (
+            <button
+              key={minutes}
+              type="button"
+              onClick={() => {
+                const closing = closingIn(minutes);
+                setOrderDate(closing.orderDate);
+                setTime(closing.cutoffTime);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <small className="closing-hint">
+          Cape Town time. The countdown hits zero and votes lock at this
+          moment.
+        </small>
         <div className="dialog-actions">
           <button type="button" className="button button--quiet" onClick={close}>
             Cancel

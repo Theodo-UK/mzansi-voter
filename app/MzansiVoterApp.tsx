@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import {
-  CalendarClock,
   ChartNoAxesCombined,
   Check,
   ChevronDown,
@@ -19,6 +18,7 @@ import Link from "next/link";
 import { BallotSettingsDialog } from "./components/BallotSettingsDialog";
 import { ItemCard } from "./components/ItemCard";
 import { ItemDialog, type ItemInput } from "./components/ItemDialog";
+import { VotingCountdown } from "./components/VotingCountdown";
 import type { AvailabilityStatus } from "@/lib/availability";
 import type { AppUser } from "@/lib/supabase/repository";
 import {
@@ -65,20 +65,6 @@ type MzansiVoterAppProps = {
   onSignOut: () => void;
 };
 
-function formatOrderDeadline(orderDate: string, cutoffTime: string) {
-  const [year, month, day] = orderDate.split("-").map(Number);
-  const [hours, minutes] = cutoffTime.split(":").map(Number);
-  const date = new Date(year, month - 1, day, hours, minutes);
-
-  return new Intl.DateTimeFormat("en-ZA", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
 function newItemFrom(input: ItemInput, user: AppUser): GroceryItem {
   return {
     id: crypto.randomUUID(),
@@ -118,6 +104,7 @@ export function MzansiVoterApp({
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [openCommentsItemId, setOpenCommentsItemId] = useState<string>();
   const [notice, setNotice] = useState("");
+  const [votingLocked, setVotingLocked] = useState(false);
   const [commentsByItemId, setCommentsByItemId] = useState(
     startingCommentsByItemId,
   );
@@ -168,7 +155,7 @@ export function MzansiVoterApp({
   function handleVote(itemId: string, value: VoteValue) {
     const previous = items;
     const item = items.find((candidate) => candidate.id === itemId);
-    if (!item || item.locked || item.skipped) return;
+    if (!item || votingLocked || item.locked || item.skipped) return;
 
     const existing = item.votes.find((vote) => vote.userId === user.id);
     const nextValue = existing?.value === value ? null : value;
@@ -446,12 +433,16 @@ export function MzansiVoterApp({
               <Store aria-hidden="true" size={15} />
               Shopping at {retailer}
             </p>
-            <p>
-              <CalendarClock aria-hidden="true" size={15} />
-              Next order: {formatOrderDeadline(nextOrderDate, cutoffTime)}
-            </p>
           </div>
         </div>
+
+        <VotingCountdown
+          orderDate={nextOrderDate}
+          cutoffTime={cutoffTime}
+          isAdmin={isAdmin}
+          onLockedChange={setVotingLocked}
+          onManage={() => setSettingsDialogOpen(true)}
+        />
 
         <details className="how-it-works" open>
           <summary>
@@ -469,6 +460,10 @@ export function MzansiVoterApp({
             <p>
               Popular items rise to the top. The budget line marks the cut, so
               anything below it needs more votes.
+            </p>
+            <p>
+              Votes lock when the countdown hits zero, and stay locked until an
+              admin opens the next ballot.
             </p>
           </div>
         </details>
@@ -503,6 +498,7 @@ export function MzansiVoterApp({
               status="accepted"
               currentUserId={user.id}
               isAdmin={isAdmin}
+              votingLocked={votingLocked}
               onVote={handleVote}
               onEdit={(selected) => {
                 setEditingItem(selected);
@@ -538,6 +534,7 @@ export function MzansiVoterApp({
                   status="out"
                   currentUserId={user.id}
                   isAdmin={isAdmin}
+                  votingLocked={votingLocked}
                   onVote={handleVote}
                   onEdit={(selected) => {
                     setEditingItem(selected);
@@ -575,6 +572,7 @@ export function MzansiVoterApp({
                   status="skipped"
                   currentUserId={user.id}
                   isAdmin={isAdmin}
+                  votingLocked={votingLocked}
                   onVote={handleVote}
                   onEdit={(selected) => {
                     setEditingItem(selected);

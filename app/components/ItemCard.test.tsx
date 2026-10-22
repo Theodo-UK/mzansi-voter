@@ -22,7 +22,7 @@ const item: RankedItem = {
   downVoters: [],
 };
 
-function renderItem(availability: AvailabilityStatus) {
+function renderItem(availability: AvailabilityStatus, votingLocked = false) {
   return renderToStaticMarkup(
     <ItemCard
       item={item}
@@ -30,6 +30,7 @@ function renderItem(availability: AvailabilityStatus) {
       status="accepted"
       currentUserId="user-1"
       isAdmin={false}
+      votingLocked={votingLocked}
       onVote={() => undefined}
       onEdit={() => undefined}
       onDelete={() => undefined}
@@ -69,5 +70,10 @@ describe("ItemCard", () => {
     expect(renderItem("available")).toContain(
       "View 1 comment about Kara Sev &amp; Nuts",
     );
+  });
+
+  it("disables voting once the ballot is locked", () => {
+    expect(renderItem("available")).not.toContain('disabled=""');
+    expect(renderItem("available", true).match(/disabled=""/g)).toHaveLength(2);
   });
 });
